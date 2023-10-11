@@ -2,6 +2,11 @@ const express = require('express');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 
+// Import the models
+const User = require('./models/user');
+const Playlist = require('./models/playlist');
+const Song = require('./models/song');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
