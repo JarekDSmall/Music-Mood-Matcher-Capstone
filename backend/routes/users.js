@@ -2,6 +2,8 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
+const authenticateJWT = require('../middleware/auth');
+
 
 const router = express.Router();
 
@@ -60,7 +62,7 @@ router.post('/login', async (req, res) => {
         }
 
         // Generate JWT
-        const token = jwt.sign({ id: user._id }, 'YOUR_SECRET_KEY', { expiresIn: '1h' }); // Replace 'YOUR_SECRET_KEY' with a strong secret key
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });  // Use the secret key from the .env file
 
         res.status(200).json({ message: 'Logged in successfully!', token });
 
@@ -69,6 +71,50 @@ router.post('/login', async (req, res) => {
         res.status(500).json({ message: 'Server error. Please try again later.' });
     }
 });
+
+// View User Profile Route
+router.get('/profile', authenticateJWT, async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const user = await User.findById(userId).select('-hashedPassword'); // Exclude the hashed password from the result
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found.' });
+        }
+
+        res.status(200).json(user);
+    } catch (error) {
+        console.error('Error fetching user profile:', error);
+        res.status(500).json({ message: 'Server error. Please try again later.' });
+    }
+});
+
+// Update User Profile Route
+router.put('/profile', authenticateJWT, async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const { username, email } = req.body;
+
+        // Find the user by ID
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found.' });
+        }
+
+        // Update the user's data
+        if (username) user.username = username;
+        if (email) user.email = email;
+
+        await user.save();
+
+        res.status(200).json({ message: 'Profile updated successfully!', user });
+
+    } catch (error) {
+        console.error('Error updating user profile:', error);
+        res.status(500).json({ message: 'Server error. Please try again later.' });
+    }
+});
+
 // TODO: Add other user-related routes (e.g., login, profile management, etc.)
 
 module.exports = router;
