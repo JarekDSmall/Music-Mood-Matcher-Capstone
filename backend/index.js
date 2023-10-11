@@ -1,6 +1,14 @@
 const express = require('express');
+const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Connect to MongoDB using Mongoose
+mongoose.connect('YOUR_MONGODB_CONNECTION_STRING', { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log('Connected to MongoDB'))
+  .catch(err => console.error('Failed to connect to MongoDB:', err));
 
 app.get('/', (req, res) => {
     res.send('Hello, World!');
