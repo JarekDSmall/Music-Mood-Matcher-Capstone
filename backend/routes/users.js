@@ -116,6 +116,23 @@ router.put('/profile', authenticateJWT, async (req, res) => {
     }
 });
 
-// TODO: Add other user-related routes (e.g., login, profile management, etc.)
+// Delete User Route
+router.delete('/delete', authenticateJWT, async (req, res) => {
+    try {
+        const userId = req.user.id;
+        
+// TODO: Delete associated data (like playlists, songs, etc.)
+        // Delete the user
+        await User.findByIdAndDelete(userId);
+
+        res.status(200).json({ message: 'User deleted successfully!' });
+
+    } catch (error) {
+        console.error('Error deleting user:', error);
+        res.status(500).json({ message: 'Server error. Please try again later.' });
+    }
+});
+
+
 
 module.exports = router;
