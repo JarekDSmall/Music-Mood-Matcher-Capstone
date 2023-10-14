@@ -1,70 +1,79 @@
-# Getting Started with Create React App
+# Music Mood Matcher
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Music Mood Matcher is a full-stack application that matches users with playlists based on their mood. It integrates with the Spotify API to fetch user's top tracks and create mood-based playlists.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- User authentication and registration.
+- Integration with Spotify API using OAuth2.0.
+- Fetch user's top tracks from Spotify.
+- Match songs with moods to create mood-based playlists.
 
-### `npm start`
+## API Endpoints
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### User Routes:
+- POST `/users/register`: Register a new user.
+- POST `/users/login`: Authenticate and log in a user.
+- GET `/users/profile`: Fetch the authenticated user's profile.
+- PUT `/users/profile`: Update the authenticated user's profile.
+- DELETE `/users/delete`: Delete the authenticated user's account.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Song Routes:
+- POST `/add-to-playlist`: Add a song to the user's playlist.
+- DELETE `/remove-from-playlist`: Remove a song from the user's playlist.
 
-### `npm test`
+### Playlist Routes:
+- POST `/create`: Create a new playlist.
+- GET `/`: Fetch all playlists for a user.
+- PUT `/:playlistId`: Update a playlist's details.
+- DELETE `/:playlistId`: Delete a playlist.
+- POST `/:playlistId/add-songs`: Add songs to a playlist.
+- POST `/:playlistId/remove-songs`: Remove songs from a playlist.
+- GET `/:playlistId`: View a specific playlist.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Spotify Routes:
+- GET `/spotify/login`: Initiate OAuth2.0 flow with Spotify.
+- GET `/spotify/callback`: Callback route for Spotify authentication.
+- GET `/spotify/top-tracks`: Fetch user's top tracks from Spotify.
+- POST `/spotify/disconnect`: Disconnect from Spotify in your app.
+- POST `/spotify/refresh-token`: Refresh the Spotify access token using the refresh token.
 
-### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Setup and Installation
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Prerequisites:
+- Node.js and npm installed on your machine.
+- MongoDB set up and running.
+- A Spotify Developer account to obtain API keys.
 
-### `npm run eject`
+### Steps:
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+1. **Clone the Repository:**
+   ```bash
+   git clone https://github.com/[JarekDSmall]/Music-Mood-Matcher-Capstone.git
+   cd mood-matcher
+2. **Install Dependencies:**
+    ```
+    cd backend
+    npm install
+    
+    cd frontend/mood-matcher
+    npm install
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+3. **Environment Variables:**
+In the backend directory, create a `.env` file and fill in the necessary environment variables
+```MONGODB_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret_key
+SPOTIFY_CLIENT_ID=your_spotify_client_id
+SPOTIFY_CLIENT_SECRET=your_spotify_client_secret
+SESSION_SECRET=your_session_secret_key
+```
+4. **Run the Backend Server**
+    ```npm start
+5. **Run the Frontend Server**
+    ```cd frontend/moodmatcher
+        npm start
+        
+6. **Access the Application**
+    Open your browser and navigate to `http://localhost:3000` to access the frontend. The backend will be running on `http://localhost:5000`.   
