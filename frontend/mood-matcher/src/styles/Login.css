@@ -1,0 +1,21 @@
+.login-container {
+    background-color: #F8c560; 
+    font-family: 'Erica One', sans-serif;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 15px #be4f2a; 
+}
+
+.login-button {
+    background-color: #8dc9a1; 
+    color: #FFFFFF;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.login-button:hover {
+    background-color: #be4f2a; /* OrangeRed */
+}

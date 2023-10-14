@@ -1,0 +1,25 @@
+.profile-container {
+    background-color: #20B2AA; /* LightSeaGreen */
+    font-family: 'Erica One', sans-serif;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 15px #FF4500; /* OrangeRed */
+}
+
+.profile-info {
+    color: #FF6347; /* Tomato */
+}
+
+.edit-button {
+    background-color: #FFD700; /* Gold */
+    color: #FFFFFF;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.edit-button:hover {
+    background-color: #FF4500; /* OrangeRed */
+}

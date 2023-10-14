@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { useAuth } from '../context/authContext';
+import { useAuth } from '../../context/authContext';
+import '../../styles/Register.css';
 
 function Register() {
     const [email, setEmail] = useState('');
@@ -17,7 +18,7 @@ function Register() {
     };
 
     return (
-        <div>
+        <div className="register-container">
             <h2>Register</h2>
             <form onSubmit={handleSubmit}>
                 <input 
@@ -32,7 +33,7 @@ function Register() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />
-                <button type="submit">Register</button>
+                <button className="register-button" type="submit">Register</button>
             </form>
         </div>
     );
