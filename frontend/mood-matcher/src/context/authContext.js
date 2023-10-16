@@ -20,11 +20,19 @@ export const AuthProvider = ({ children }) => {
         setIsAuthenticated(false);
     };
 
+    const register = async (email, password) => {
+        // Here, you'll typically call your backend API to register the user.
+        // For now, I'll just simulate a successful registration.
+        setCurrentUser({ email }); // This is just a mock. Replace with actual user data from your backend.
+        setIsAuthenticated(true);
+    };
+
     const contextValue = {
         currentUser,
         isAuthenticated,
         login,
-        logout
+        logout,
+        register  // <-- Added the register function here
     };
 
     return (
@@ -33,5 +41,4 @@ export const AuthProvider = ({ children }) => {
         </AuthContext.Provider>
     );
 };
-
 

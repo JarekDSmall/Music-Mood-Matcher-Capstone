@@ -1,0 +1,19 @@
+.song-detail-container, .song-list-container {
+    background-color: #F4A460; /* SandyBrown */
+    padding: 20px;
+    border-radius: 10px;
+    margin: 20px 0;
+}
+
+.song-detail-container h2, .song-list-container h2 {
+    color: #8B4513; /* SaddleBrown */
+    font-family: 'Erica One', sans-serif;
+    border-bottom: 2px solid #8B4513;
+    padding-bottom: 10px;
+}
+
+.song-detail-container p, .song-list-container p {
+    color: #8B4513; /* SaddleBrown */
+    font-family: 'Erica One', sans-serif;
+    margin: 10px 0;
+}
