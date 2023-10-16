@@ -3,7 +3,17 @@ const axios = require('axios');
 const querystring = require('querystring');
 const passport = require('passport');  // Import passport
 const authenticateJWT = require('../middleware/auth');
+const SpotifyWebApi = require('spotify-web-api-node');
+
 const router = express.Router();
+
+
+
+// Endpoint to generate the Spotify authorization URL
+router.get('/auth-url', (req, res) => {
+    const authUrl = spotifyApi.createAuthorizeURL(['user-read-private', 'user-read-email'], 'some-state');
+    res.json({ authUrl });
+});
 
 // Route to initiate OAuth2.0 flow with Spotify
 router.get('/login', passport.authenticate('spotify', {
