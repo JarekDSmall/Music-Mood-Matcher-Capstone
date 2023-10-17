@@ -4,8 +4,18 @@ const querystring = require('querystring');
 const passport = require('passport');  // Import passport
 const authenticateJWT = require('../middleware/auth');
 const SpotifyWebApi = require('spotify-web-api-node');
+const jwt = require('jsonwebtoken');
+
+const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3000';
 
 const router = express.Router();
+
+// Initialize the spotifyApi object
+const spotifyApi = new SpotifyWebApi({
+    clientId: process.env.SPOTIFY_CLIENT_ID,
+    clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
+    redirectUri: 'http://localhost:5000/spotify/callback'
+});
 
 
 
@@ -22,6 +32,7 @@ router.get('/login', passport.authenticate('spotify', {
 }));
 
 router.get('/callback', async (req, res) => {
+    console.log("Callback endpoint hit"); 
     const { code } = req.query;
 
     try {
@@ -39,16 +50,31 @@ router.get('/callback', async (req, res) => {
 
         const { access_token, refresh_token } = response.data;
 
-        // Store the access_token and refresh_token for the user in the database
-        // TODO: Implement database logic to store tokens
+        // Create a JWT token for the user
+        const token = jwt.sign({ spotifyAccessToken: access_token, spotifyRefreshToken: refresh_token }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-        res.json({ access_token, refresh_token });
+        res.cookie('spotifyAuthToken', access_token, { httpOnly: true, sameSite: 'strict', maxAge: 3600000 }); // 1 hour expiration
+
+        res.redirect(`${FRONTEND_URL}/process-token?token=${token}`);
+
 
     } catch (error) {
         console.error('Error in Spotify callback:', error);
         res.status(500).json({ message: 'Failed to authenticate with Spotify.' });
     }
 });
+
+
+// "Logout" or "disconnect" from Spotify in your app
+router.post('/disconnect', authenticateJWT, (req, res) => {
+    // Remove the stored tokens for the user.
+    // TODO: Implement database logic to remove tokens
+
+    res.clearCookie('spotifyAuthToken'); // Clear the Spotify authentication cookie
+    res.status(200).json({ message: 'Disconnected from Spotify successfully.' });
+});
+
+
 
 router.get('/top-tracks', authenticateJWT, async (req, res) => {
     const accessToken = req.user.spotifyAccessToken;
@@ -104,13 +130,7 @@ router.get('/top-tracks', authenticateJWT, async (req, res) => {
     }
 });
 
-// "Logout" or "disconnect" from Spotify in your app
-router.post('/disconnect', authenticateJWT, (req, res) => {
-    // Remove the stored tokens for the user.
-    // TODO: Implement database logic to remove tokens
 
-    res.status(200).json({ message: 'Disconnected from Spotify successfully.' });
-});
 
 // Route to refresh the Spotify access token using the refresh token
 router.post('/refresh-token', authenticateJWT, async (req, res) => {

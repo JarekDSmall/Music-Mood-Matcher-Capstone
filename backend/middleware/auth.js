@@ -19,7 +19,13 @@ function authenticateJWT(req, res, next) {
             next();
         });
     } else {
-        return res.status(401).json({ message: 'Access token required' });
+        // Check for Spotify authentication token in cookies
+        const spotifyToken = req.cookies.spotifyAuthToken;
+        if (!spotifyToken) {
+            return res.status(401).json({ message: 'Access token required' });
+        }
+        // If Spotify token exists, proceed to the next middleware or route handler
+        next();
     }
 }
 
