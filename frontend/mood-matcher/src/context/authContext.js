@@ -8,17 +8,20 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(null);
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem('isAuthenticated') === 'true' || false);
+
 
     const login = (user) => {
         setCurrentUser(user);
         setIsAuthenticated(true);
+        localStorage.setItem('isAuthenticated', 'true');
     };
-
+    
     const logout = () => {
         setCurrentUser(null);
         setIsAuthenticated(false);
-    };
+        localStorage.removeItem('isAuthenticated');
+    };    
 
     const register = async (email, password) => {
         // Here, you'll typically call your backend API to register the user.

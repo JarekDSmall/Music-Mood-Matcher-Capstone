@@ -1,7 +1,31 @@
-import React from 'react';
+import React, { useEffect, useContext } from 'react';
 import axios from 'axios';
+import { AuthContext } from '../../context/authContext';
 
 function SpotifyLogin() {
+  const { login } = useContext(AuthContext);
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
+
+    if (code) {
+      const fetchAccessToken = async () => {
+        try {
+          const response = await axios.get(`/spotify/callback?code=${code}`);
+          const { token } = response.data;
+          if (token) {
+            login(token);  // Assuming your login function accepts the token as a parameter
+          }
+        } catch (error) {
+          console.error("Error fetching access token:", error);
+        }
+      };
+
+      fetchAccessToken();
+    }
+  }, [login]);
+
   const handleLogin = async () => {
     try {
       const response = await axios.get('/spotify/auth-url');
