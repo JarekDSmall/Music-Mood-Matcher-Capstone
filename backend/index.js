@@ -19,6 +19,8 @@ const userRoutes = require('./routes/users');
 const songRoutes = require('./routes/songs');
 const playlistRoutes = require('./routes/playlists');
 const spotifyRoutes = require('./routes/spotify');
+const moodsRoutes = require('./routes/moods');
+const genresRoutes = require('./routes/genres');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -81,6 +83,8 @@ app.use('/users', userRoutes);
 app.use('/songs', songRoutes);
 app.use('/playlists', playlistRoutes);
 app.use('/spotify', spotifyRoutes);
+app.use('/moods', moodsRoutes);
+app.use('/genres', genresRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);

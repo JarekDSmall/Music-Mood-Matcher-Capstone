@@ -55,12 +55,34 @@ router.get('/callback', async (req, res) => {
 
         res.cookie('spotifyAuthToken', access_token, { httpOnly: true, sameSite: 'strict', maxAge: 3600000 }); // 1 hour expiration
 
-        res.redirect(`${FRONTEND_URL}/process-token?token=${token}`);
+        res.redirect(`${FRONTEND_URL}/spotify-dashboard?token=${token}`);
 
 
     } catch (error) {
         console.error('Error in Spotify callback:', error);
         res.status(500).json({ message: 'Failed to authenticate with Spotify.' });
+    }
+});
+
+router.get('/spotify-token', async (req, res) => {
+    console.log("Attempting to access /spotify-token");
+    try {
+        const response = await axios.post('https://accounts.spotify.com/api/token', querystring.stringify({
+            grant_type: 'client_credentials',
+            client_id: process.env.SPOTIFY_CLIENT_ID,
+            client_secret: process.env.SPOTIFY_CLIENT_SECRET
+        }), {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        });
+
+        const accessToken = response.data.access_token;
+        res.json({ access_token: accessToken });
+
+    } catch (error) {
+        console.error('Error getting Spotify token for non-user:', error);
+        res.status(500).json({ message: 'Failed to get Spotify token for non-user.' });
     }
 });
 

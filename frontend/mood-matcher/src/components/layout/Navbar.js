@@ -42,7 +42,7 @@ const Navbar = () => {
                                 <Link to="/profile">Profile</Link>
                             </li>
                             <li>
-                                <button onClick={handleLogout}>Logout</button>
+                                <button className="navbar-menu" onClick={handleLogout}>Logout</button>
                             </li>
                         </>
                     )}
