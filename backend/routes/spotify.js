@@ -14,7 +14,7 @@ const router = express.Router();
 const spotifyApi = new SpotifyWebApi({
     clientId: process.env.SPOTIFY_CLIENT_ID,
     clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
-    redirectUri: 'http://localhost:5000/spotify/callback'
+    redirectUri: 'http://localhost:3000/spotify-dashboard'
 });
 
 router.get('/auth-url', (req, res) => {
@@ -31,10 +31,11 @@ router.get('/callback', async (req, res) => {
     const { code } = req.query;
 
     try {
+        // Requesting access and refresh tokens from Spotify using the received code
         const response = await axios.post('https://accounts.spotify.com/api/token', querystring.stringify({
             grant_type: 'authorization_code',
             code: code,
-            redirect_uri: 'http://localhost:5000/spotify/callback',
+            redirect_uri: `${FRONTEND_URL}/spotify-dashboard`,  // Redirecting to frontend after processing
             client_id: process.env.SPOTIFY_CLIENT_ID,
             client_secret: process.env.SPOTIFY_CLIENT_SECRET
         }), {
@@ -44,15 +45,28 @@ router.get('/callback', async (req, res) => {
         });
 
         const { access_token, refresh_token } = response.data;
+
+        // Generating a JWT token using the received access and refresh tokens
         const token = jwt.sign({ spotifyAccessToken: access_token, spotifyRefreshToken: refresh_token }, process.env.JWT_SECRET, { expiresIn: '1h' });
-        res.cookie('spotifyAuthToken', access_token, { httpOnly: true, sameSite: 'strict', maxAge: 3600000 });
-        res.redirect(`${FRONTEND_URL}/spotify-dashboard?token=${token}`);
+        
+        // Setting the JWT token as a cookie
+        res.cookie('spotifyAuthToken', token, {
+            httpOnly: true,
+            secure: true,  // Ensure this is set to true if your application uses HTTPS
+            maxAge: 3600000,  // 1 hour in milliseconds
+            sameSite: 'strict'  // This setting can help prevent CSRF attacks
+        });
+
+        // Redirecting to the frontend dashboard after setting the cookie
+        res.redirect(`${FRONTEND_URL}/dashboard`);
 
     } catch (error) {
         console.error('Error in Spotify callback:', error);
         res.status(500).json({ message: 'Failed to authenticate with Spotify.' });
     }
 });
+
+
 
 router.get('/spotify-token', async (req, res) => {
     try {
@@ -132,6 +146,25 @@ router.get('/top-tracks', authenticateJWT, async (req, res) => {
 });
 
 
+router.get('/recommendations', authenticateJWT, async (req, res) => {
+    const accessToken = req.user.spotifyAccessToken;
+    const genre = req.query.genre;
+
+    try {
+        const response = await axios.get(`https://api.spotify.com/v1/recommendations?seed_genres=${genre}`, {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            }
+        });
+
+        res.json(response.data.tracks);
+
+    } catch (error) {
+        console.error('Error fetching recommendations:', error);
+        res.status(500).json({ message: 'Failed to fetch recommendations from Spotify.' });
+    }
+});
+
 router.get('/track-features/:trackId', authenticateJWT, async (req, res) => {
     const accessToken = req.user.spotifyAccessToken;
     const trackId = req.params.trackId;
@@ -143,12 +176,30 @@ router.get('/track-features/:trackId', authenticateJWT, async (req, res) => {
             }
         });
 
-        const trackFeatures = response.data;
-        res.json(trackFeatures);
+        res.json(response.data);
 
     } catch (error) {
         console.error('Error fetching track features:', error);
         res.status(500).json({ message: 'Failed to fetch track features from Spotify.' });
+    }
+});
+
+router.get('/search', authenticateJWT, async (req, res) => {
+    const accessToken = req.user.spotifyAccessToken;
+    const query = req.query.q;
+
+    try {
+        const response = await axios.get(`https://api.spotify.com/v1/search?q=${query}&type=track,album,artist`, {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            }
+        });
+
+        res.json(response.data);
+
+    } catch (error) {
+        console.error('Error performing search:', error);
+        res.status(500).json({ message: 'Failed to search Spotify.' });
     }
 });
 

@@ -8,6 +8,7 @@ const passport = require('passport');
 const SpotifyStrategy = require('passport-spotify').Strategy;
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
+const cookieParser = require('cookie-parser');
 
 // Load the models first
 require('./models/song');
@@ -29,6 +30,7 @@ const PORT = process.env.PORT || 5000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
+app.use(cookieParser());
 
 // Setup express-session with connect-mongo
 app.use(session({
@@ -56,6 +58,8 @@ passport.use(
       callbackURL: 'http://localhost:5000/spotify/callback'
     },
     function(accessToken, refreshToken, expires_in, profile, done) {
+      // Store accessToken in session
+      profile.accessToken = accessToken;
       return done(null, profile);
     }
   )
@@ -76,6 +80,12 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
 
 app.get('/', (req, res) => {
     res.send('Hello, World!');
+});
+
+// Redirect to Client with Tokens
+app.get('/spotify/redirect', (req, res) => {
+    const accessToken = req.user.accessToken;
+    res.redirect(`http://localhost:3000/?accessToken=${accessToken}`);
 });
 
 // Use the routes

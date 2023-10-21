@@ -1,24 +1,44 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 function SpotifyRedirect() {
     const navigate = useNavigate();
-    const [token, setToken] = useState(null); // State variable to store the token
 
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
-        const extractedToken = urlParams.get('token');
-        if (extractedToken) {
-            localStorage.setItem('spotifyAuthToken', extractedToken);
-            navigate('/dashboard');
+        const code = urlParams.get('code');
+
+        if (code) {
+            // Send the code to the backend to get the JWT token
+            fetch('http://localhost:5000/spotify/callback', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                const token = data.token;
+                if (token) {
+                    localStorage.setItem('spotifyAuthToken', token);
+                    navigate('/dashboard');
+                } else {
+                    console.error("Token not received from backend");
+                    navigate('/');
+                }
+            })
+            .catch(error => {
+                console.error("Error fetching token from backend:", error);
+                navigate('/');
+            });
         } else {
-            console.error("Token not found in URL");
+            console.error("Code not found in URL");
             navigate('/');
         }
     }, [navigate]);
-     // Add token and navigate as dependencies
 
     return null;
 }
+
 
 export default SpotifyRedirect;
