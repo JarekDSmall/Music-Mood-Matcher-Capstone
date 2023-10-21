@@ -1,10 +1,18 @@
-// MoodSelection.js
-
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { usePlaylist } from '../../context/PlaylistContext'; // Updated to use the correct hook
 
 function MoodSelection() {
     const [selectedMood, setSelectedMood] = useState(null);
-    const moods = ['Happy', 'Sad', 'Energetic', 'Calm']; // Add more moods as needed
+    const { setMood } = usePlaylist(); // Using the correct hook
+    const navigate = useNavigate();
+    const moods = ['Happy', 'Sad', 'Energetic', 'Calm'];
+
+    const handleMoodSelect = (mood) => {
+        setSelectedMood(mood);
+        setMood(mood);
+        navigate('/next-route'); // Replaced history.push with navigate
+    };
 
     return (
         <div>
@@ -14,7 +22,7 @@ function MoodSelection() {
                     <button 
                         key={mood}
                         className={selectedMood === mood ? 'selected' : ''}
-                        onClick={() => setSelectedMood(mood)}
+                        onClick={() => handleMoodSelect(mood)}
                     >
                         {mood}
                     </button>

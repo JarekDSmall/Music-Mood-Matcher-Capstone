@@ -1,27 +1,35 @@
-import React, { useState } from 'react';
-import '../../styles/CreatePlaylist.css';
+import React, { useContext } from 'react';
+import SearchBar from './SearchBar';
+import SearchResults from './SearchResults';
+import { PlaylistContext } from '../context/PlaylistContext';
 
 function CreatePlaylist() {
-    const [name, setName] = useState('');
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        // Logic to create a new playlist
-        console.log(`Created playlist: ${name}`);
-    };
+    const { mood, setMood, genre, setGenre, artist, setArtist, currentTracks } = useContext(PlaylistContext);
 
     return (
-        <div className="create-playlist">
-            <h2>Create a New Playlist</h2>
-            <form onSubmit={handleSubmit}>
-                <input 
-                    type="text" 
-                    placeholder="Playlist Name" 
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                />
-                <button type="submit">Create</button>
-            </form>
+        <div>
+            <h2>Create New Playlist</h2>
+            <input type="text" placeholder="Playlist Name" />
+            
+            <select value={mood} onChange={(e) => setMood(e.target.value)}>
+                {/* Add your moods here */}
+                <option value="happy">Happy</option>
+                <option value="sad">Sad</option>
+                {/* ... */}
+            </select>
+
+            <select value={genre} onChange={(e) => setGenre(e.target.value)}>
+                {/* Add your genres here */}
+                <option value="rock">Rock</option>
+                <option value="pop">Pop</option>
+                {/* ... */}
+            </select>
+
+            <input type="text" value={artist} onChange={(e) => setArtist(e.target.value)} placeholder="Artist (optional)" />
+
+            <SearchBar />
+            <SearchResults tracks={currentTracks} />
+            <button>Finalize Playlist</button>
         </div>
     );
 }

@@ -4,17 +4,33 @@ const PlaylistContext = createContext();
 
 export const PlaylistProvider = ({ children }) => {
     const [playlists, setPlaylists] = useState([]);
+    const [currentTracks, setCurrentTracks] = useState([]); // State for tracks being added
+    const [mood, setMood] = useState(''); // State for mood
+    const [genre, setGenre] = useState(''); // State for genre
+    const [artist, setArtist] = useState(''); // State for artist (optional)
 
-    const addPlaylist = (playlist) => {
-        setPlaylists(prevPlaylists => [...prevPlaylists, playlist]);
+    const addTrackToCurrent = (track) => {
+        setCurrentTracks(prevTracks => [...prevTracks, track]);
     };
 
-    const removePlaylist = (playlistId) => {
-        setPlaylists(prevPlaylists => prevPlaylists.filter(pl => pl.id !== playlistId));
+    const removeTrackFromCurrent = (trackId) => {
+        setCurrentTracks(prevTracks => prevTracks.filter(track => track.id !== trackId));
     };
 
     return (
-        <PlaylistContext.Provider value={{ playlists, setPlaylists, addPlaylist, removePlaylist }}>
+        <PlaylistContext.Provider value={{ 
+            playlists, 
+            setPlaylists, 
+            currentTracks, 
+            addTrackToCurrent, 
+            removeTrackFromCurrent,
+            mood, 
+            setMood,
+            genre,
+            setGenre,
+            artist,
+            setArtist
+        }}>
             {children}
         </PlaylistContext.Provider>
     );

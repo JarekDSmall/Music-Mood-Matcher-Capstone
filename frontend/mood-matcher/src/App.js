@@ -11,7 +11,9 @@ import Profile from './components/user/Profile';
 
 // Playlist Components
 import Playlist from './components/playlist/PlaylistList'; 
-import PlaylistCreation from './components/playlist/PlaylistCreation'; // <-- New import
+import PlaylistCreation from './components/playlist/PlaylistCreation';
+import MoodSelection from './components/playlist/MoodSelection';
+import GenreSelection from './components/playlist/GenreSelection';
 
 // Spotify Components
 import SpotifyAuth from './components/spotify/SpotifyLogin'; 
@@ -20,6 +22,7 @@ import SpotifyRedirect from './components/spotify/SpotifyRedirect';
 // Pages
 import HomePage from './pages/HomePage';
 import DashboardPage from './pages/DashboardPage';
+import Recommendations from './pages/Recommendations';  // <-- New import
 
 // Context
 import { AuthProvider } from './context/authContext';
@@ -42,10 +45,17 @@ function App() {
               <Route path="/register" element={<Register />} />
               <Route path="/profile" element={<PrivateRouteWrapper><Profile /></PrivateRouteWrapper>} />
               <Route path="/playlist" element={<PrivateRouteWrapper><Playlist /></PrivateRouteWrapper>} />
-              <Route path="/create-playlist" element={<PrivateRouteWrapper><PlaylistCreation /></PrivateRouteWrapper>} /> {/* <-- New route wrapped with PrivateRouteWrapper */}
+              
+              {/* Direct Routes for Playlist Creation */}
+              <Route path="/create-playlist" element={<PrivateRouteWrapper><MoodSelection /></PrivateRouteWrapper>} />
+              <Route path="/create-playlist/mood" element={<PrivateRouteWrapper><MoodSelection /></PrivateRouteWrapper>} />
+              <Route path="/create-playlist/genre" element={<PrivateRouteWrapper><GenreSelection /></PrivateRouteWrapper>} />
+              <Route path="/create-playlist/tracks" element={<PrivateRouteWrapper><PlaylistCreation /></PrivateRouteWrapper>} />
+
               <Route path="/spotify-auth" element={<SpotifyAuth />} />
               <Route path="/spotify-dashboard" element={<SpotifyRedirect />} />
               <Route path="/dashboard" element={<PrivateRouteWrapper><DashboardPage /></PrivateRouteWrapper>} />
+              <Route path="/recommendations" element={<PrivateRouteWrapper><Recommendations /></PrivateRouteWrapper>} />  {/* <-- New Route */}
               <Route path="/process-token" element={<ProcessToken />} />
               {/* <Route path="*" element={<NotFoundPage />} /> */}
             </Routes>

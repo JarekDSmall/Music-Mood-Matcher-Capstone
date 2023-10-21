@@ -1,19 +1,21 @@
-// components/playlist/SearchResults.js
-
 import React from 'react';
+import { usePlaylist } from '../../context/PlaylistContext';
 import Track from './Track';
 
-function SearchResults({ tracks, onTrackSelect }) {
-  return (
-    <div>
-      {tracks.map((track) => (
-        <div key={track.id}>
-          <Track track={track} />
-          <button onClick={() => onTrackSelect(track)}>Add to Playlist</button>
+function SearchResults({ tracks }) {
+    const { addTrackToCurrent } = usePlaylist();
+
+    return (
+        <div>
+            {tracks.map((track) => (
+                <div key={track.id}>
+                    {/* Assuming Track component displays track info */}
+                    <Track track={track} />
+                    <button onClick={() => addTrackToCurrent(track)}>Add to Playlist</button>
+                </div>
+            ))}
         </div>
-      ))}
-    </div>
-  );
+    );
 }
 
 export default SearchResults;

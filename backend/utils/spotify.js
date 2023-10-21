@@ -1,10 +1,8 @@
-// utils/spotify.js
-
 const axios = require('axios');
 const qs = require('querystring');
 const btoa = require('btoa');
 
-async function getClientCredentialsToken() {
+async function getSpotifyAccessToken() {
     const clientId = process.env.SPOTIFY_CLIENT_ID;
     const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
 
@@ -22,11 +20,11 @@ async function getClientCredentialsToken() {
 
         return response.data.access_token;
     } catch (error) {
-        console.error('Error obtaining client credentials token:', error);
-        throw error;
+        console.error('Error obtaining Spotify access token:', error);
+        return null;
     }
 }
 
 module.exports = {
-    getClientCredentialsToken
+    getSpotifyAccessToken
 };

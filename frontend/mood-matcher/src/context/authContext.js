@@ -8,7 +8,7 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(null);
-    const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem('isAuthenticated') === 'true' || false);
+    const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem('spotifyAuthToken') !== null);
 
 
     const login = (user) => {

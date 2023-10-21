@@ -10,6 +10,7 @@ const DashboardPage = () => {
     const [playlists, setPlaylists] = useState([]);
     const [isSpotifyConnected, setIsSpotifyConnected] = useState(false);
     const [spotifyAccessToken, setSpotifyAccessToken] = useState(null); // Store the Spotify access token
+    const [newPlaylistName, setNewPlaylistName] = useState(''); // State to store the new playlist name
 
     useEffect(() => {
         const spotifyToken = localStorage.getItem('spotifyAuthToken');
@@ -36,7 +37,7 @@ const DashboardPage = () => {
 
     const fetchPlaylists = async (token) => {
         try {
-            const response = await axios.get('/spotify/playlists', {
+            const response = await axios.get('/playlists', {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -44,6 +45,22 @@ const DashboardPage = () => {
             setPlaylists(response.data);
         } catch (error) {
             console.error("Error fetching playlists:", error);
+        }
+    };
+
+    const handleCreatePlaylist = async () => {
+        try {
+            const response = await axios.post('/playlists/create', {
+                name: newPlaylistName
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            setPlaylists([...playlists, response.data.playlist]);
+            setNewPlaylistName('');
+        } catch (error) {
+            console.error("Error creating playlist:", error);
         }
     };
 
@@ -79,6 +96,15 @@ const DashboardPage = () => {
                             <li key={playlist.id}>{playlist.name}</li>
                         ))}
                     </ul>
+                    <div>
+                        <input 
+                            type="text" 
+                            placeholder="Enter new playlist name" 
+                            value={newPlaylistName}
+                            onChange={e => setNewPlaylistName(e.target.value)}
+                        />
+                        <button onClick={handleCreatePlaylist}>Create Playlist</button>
+                    </div>
                 </>
             ) : (
                 <div>

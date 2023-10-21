@@ -8,23 +8,22 @@ function SpotifyLogin() {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get('code');
-
     if (code) {
-      const fetchAccessToken = async () => {
-        try {
-          const response = await axios.get(`/spotify/callback?code=${code}`);
-          const { token } = response.data;
-          if (token) {
-            login(token);  // Assuming your login function accepts the token as a parameter
-          }
-        } catch (error) {
-          console.error("Error fetching access token:", error);
-        }
-      };
-
-      fetchAccessToken();
+        const fetchAccessToken = async () => {
+            try {
+                const response = await axios.get(`/spotify/callback?code=${code}`);
+                const { token } = response.data;
+                if (token) {
+                    localStorage.setItem('spotifyAuthToken', token);
+                }
+            } catch (error) {
+                console.error("Error fetching access token:", error);
+            }
+        };
+        fetchAccessToken();
     }
-  }, [login]);
+}, []);
+
 
   const handleLogin = async () => {
     try {
