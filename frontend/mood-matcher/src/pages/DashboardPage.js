@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+
 import jwtDecode from 'jwt-decode';
 
 const DashboardPage = () => {
     const token = localStorage.getItem('jwtToken');
     const decodedToken = jwtDecode(token);
     
+    const userId = decodedToken.userId; // Extract userId from the decoded token
+
     const [topTracks, setTopTracks] = useState([]);
     const [playlists, setPlaylists] = useState([]);
     const [isSpotifyConnected, setIsSpotifyConnected] = useState(false);
@@ -51,7 +54,8 @@ const DashboardPage = () => {
     const handleCreatePlaylist = async () => {
         try {
             const response = await axios.post('/playlists/create', {
-                name: newPlaylistName
+                name: newPlaylistName,
+                userId: userId  // Send userId in the request body
             }, {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -63,6 +67,7 @@ const DashboardPage = () => {
             console.error("Error creating playlist:", error);
         }
     };
+    
 
     const handleContinueWithoutSpotify = async () => {
         try {
