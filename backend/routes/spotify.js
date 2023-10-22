@@ -14,18 +14,31 @@ const router = express.Router();
 const spotifyApi = new SpotifyWebApi({
     clientId: process.env.SPOTIFY_CLIENT_ID,
     clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
-    redirectUri: 'http://localhost:3000/spotify-dashboard'
+    redirectUri: 'http://localhost:5000/spotify/callback'  // Updated to point to the backend
 });
 
 router.get('/auth-url', (req, res) => {
-    const authUrl = spotifyApi.createAuthorizeURL(['user-read-private', 'user-read-email'], 'some-state');
+    const authUrl = spotifyApi.createAuthorizeURL([
+        'user-read-private', 
+        'user-read-email', 
+        'user-top-read', 
+        'playlist-modify-private', 
+        'playlist-modify-public'
+    ], 'some-state');
     res.json({ authUrl });
 });
 
 router.get('/login', passport.authenticate('spotify', {
-    scope: ['user-read-email', 'user-read-private', 'user-top-read'],
+    scope: [
+        'user-read-email', 
+        'user-read-private', 
+        'user-top-read', 
+        'playlist-modify-private', 
+        'playlist-modify-public'
+    ],
     showDialog: true
 }));
+
 
 router.get('/callback', async (req, res) => {
     const { code } = req.query;
@@ -35,7 +48,7 @@ router.get('/callback', async (req, res) => {
         const response = await axios.post('https://accounts.spotify.com/api/token', querystring.stringify({
             grant_type: 'authorization_code',
             code: code,
-            redirect_uri: `${FRONTEND_URL}/spotify-dashboard`,  // Redirecting to frontend after processing
+            redirect_uri: 'http://localhost:5000/spotify/callback',  // Updated to point to the backend
             client_id: process.env.SPOTIFY_CLIENT_ID,
             client_secret: process.env.SPOTIFY_CLIENT_SECRET
         }), {
@@ -95,10 +108,13 @@ router.post('/disconnect', authenticateJWT, (req, res) => {
 });
 
 router.get('/top-tracks', authenticateJWT, async (req, res) => {
+    console.log(`[INFO] Incoming request to /top-tracks from ${req.ip}`);
+
     const accessToken = req.user.spotifyAccessToken;
     const refreshToken = req.user.spotifyRefreshToken;
 
     try {
+        console.log('[INFO] Fetching top tracks from Spotify...');
         const response = await axios.get('https://api.spotify.com/v1/me/top/tracks', {
             headers: {
                 'Authorization': `Bearer ${accessToken}`
@@ -106,11 +122,15 @@ router.get('/top-tracks', authenticateJWT, async (req, res) => {
         });
 
         const topTracks = response.data.items;
+        console.log('[INFO] Successfully fetched top tracks from Spotify.');
         res.json(topTracks);
 
     } catch (error) {
+        console.error('[ERROR] Error fetching top tracks:', error);
+
         if (error.response && error.response.status === 401) {
-            // Token expired, try to refresh it
+            console.warn('[WARN] Spotify token expired. Attempting to refresh...');
+            
             try {
                 const response = await axios.post('https://accounts.spotify.com/api/token', querystring.stringify({
                     grant_type: 'refresh_token',
@@ -124,8 +144,9 @@ router.get('/top-tracks', authenticateJWT, async (req, res) => {
                 });
 
                 const newAccessToken = response.data.access_token;
+                console.log('[INFO] Successfully refreshed Spotify token.');
 
-                // Retry the original request with the new token
+                console.log('[INFO] Retrying top tracks request with new token...');
                 const retryResponse = await axios.get('https://api.spotify.com/v1/me/top/tracks', {
                     headers: {
                         'Authorization': `Bearer ${newAccessToken}`
@@ -133,13 +154,13 @@ router.get('/top-tracks', authenticateJWT, async (req, res) => {
                 });
 
                 res.json(retryResponse.data.items);
+                console.log('[INFO] Successfully fetched top tracks with refreshed token.');
 
             } catch (refreshError) {
-                console.error('Error refreshing Spotify token:', refreshError);
+                console.error('[ERROR] Error refreshing Spotify token:', refreshError);
                 res.status(500).json({ message: 'Failed to refresh Spotify token.' });
             }
         } else {
-            console.error('Error fetching top tracks:', error);
             res.status(500).json({ message: 'Failed to fetch top tracks from Spotify.' });
         }
     }
