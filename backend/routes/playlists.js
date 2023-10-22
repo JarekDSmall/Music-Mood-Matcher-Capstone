@@ -43,10 +43,16 @@ router.put('/:playlistId', authenticateJWT, async (req, res) => {
     try {
         const { name, description } = req.body;
         const playlistId = req.params.playlistId;
+        const userId = req.user.id;
 
         const playlist = await Playlist.findById(playlistId);
         if (!playlist) {
             return res.status(404).json({ message: 'Playlist not found.' });
+        }
+
+        // Check if the playlist belongs to the authenticated user
+        if (playlist.userId.toString() !== userId) {
+            return res.status(403).json({ message: 'You do not have permission to update this playlist.' });
         }
 
         if (name) playlist.name = name;
@@ -60,6 +66,7 @@ router.put('/:playlistId', authenticateJWT, async (req, res) => {
         res.status(500).json({ message: 'Server error. Please try again later.' });
     }
 });
+
 
 // Delete a playlist
 router.delete('/:playlistId', authenticateJWT, async (req, res) => {

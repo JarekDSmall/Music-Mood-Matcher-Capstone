@@ -48,7 +48,7 @@ router.get('/callback', async (req, res) => {
         const response = await axios.post('https://accounts.spotify.com/api/token', querystring.stringify({
             grant_type: 'authorization_code',
             code: code,
-            redirect_uri: 'http://localhost:5000/spotify/callback',  // Updated to point to the backend
+            redirect_uri: 'http://localhost:5000/spotify/callback',
             client_id: process.env.SPOTIFY_CLIENT_ID,
             client_secret: process.env.SPOTIFY_CLIENT_SECRET
         }), {
@@ -59,15 +59,24 @@ router.get('/callback', async (req, res) => {
 
         const { access_token, refresh_token } = response.data;
 
-        // Generating a JWT token using the received access and refresh tokens
-        const token = jwt.sign({ spotifyAccessToken: access_token, spotifyRefreshToken: refresh_token }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        // Fetch the user's profile information from Spotify
+        const userProfileResponse = await axios.get('https://api.spotify.com/v1/me', {
+            headers: {
+                'Authorization': `Bearer ${access_token}`
+            }
+        });
+
+        const userId = userProfileResponse.data.id;
+
+        // Generating a JWT token using the received access and refresh tokens and the userId
+        const token = jwt.sign({ spotifyAccessToken: access_token, spotifyRefreshToken: refresh_token, userId: userId }, process.env.JWT_SECRET, { expiresIn: '1h' });
         
         // Setting the JWT token as a cookie
         res.cookie('spotifyAuthToken', token, {
             httpOnly: true,
-            secure: true,  // Ensure this is set to true if your application uses HTTPS
-            maxAge: 3600000,  // 1 hour in milliseconds
-            sameSite: 'strict'  // This setting can help prevent CSRF attacks
+            secure: true,
+            maxAge: 3600000,
+            sameSite: 'strict'
         });
 
         // Redirecting to the frontend dashboard after setting the cookie
@@ -78,6 +87,7 @@ router.get('/callback', async (req, res) => {
         res.status(500).json({ message: 'Failed to authenticate with Spotify.' });
     }
 });
+
 
 
 

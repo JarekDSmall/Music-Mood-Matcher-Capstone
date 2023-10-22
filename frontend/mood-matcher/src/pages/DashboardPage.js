@@ -53,7 +53,7 @@ const DashboardPage = () => {
 
     const handleCreatePlaylist = async () => {
         try {
-            const response = await axios.post('/playlists/create', {
+            const response = await axios.post('/spotify/create-playlist', {
                 name: newPlaylistName,
                 userId: userId  // Send userId in the request body
             }, {
