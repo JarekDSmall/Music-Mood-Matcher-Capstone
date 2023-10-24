@@ -19,6 +19,18 @@ const songSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    spotifyId: {
+        type: String,
+        unique: true
+    },
+    genre: {
+        type: String,
+        trim: true
+    },
+    previewUrl: {
+        type: String,
+        trim: true
+    },
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',

@@ -16,15 +16,17 @@ require('./models/playlist');
 require('./models/user');
 
 // Import the routes
-const userRoutes = require('./routes/users');
-const songRoutes = require('./routes/songs');
+// const userRoutes = require('./routes/users');
 const playlistRoutes = require('./routes/playlists');
 const spotifyRoutes = require('./routes/spotify');
 const moodsRoutes = require('./routes/moods');
+const moodRoutes = require('./routes/mood');
 const genresRoutes = require('./routes/genres');
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+let server;
+
+
 
 // Middleware setup
 app.use(express.json());
@@ -74,13 +76,17 @@ passport.deserializeUser(function(obj, done) {
 });
 
 // Connect to MongoDB using Mongoose
-mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log('Connected to MongoDB'))
-  .catch(err => console.error('Failed to connect to MongoDB:', err));
+const connectToDatabase = async () => {
+  try {
+    await mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+    console.log('Connected to MongoDB');
+  } catch (err) {
+    console.error('Failed to connect to MongoDB:', err);
+  }
+};
 
-app.get('/', (req, res) => {
-    res.send('Hello, World!');
-});
+// Call the connectToDatabase function
+connectToDatabase();
 
 // Redirect to Client with Tokens
 app.get('/spotify/redirect', (req, res) => {
@@ -89,13 +95,19 @@ app.get('/spotify/redirect', (req, res) => {
 });
 
 // Use the routes
-app.use('/users', userRoutes);
-app.use('/songs', songRoutes);
+// app.use('/users', userRoutes);
 app.use('/playlists', playlistRoutes);
 app.use('/spotify', spotifyRoutes);
 app.use('/moods', moodsRoutes);
+app.use('/api/mood', moodRoutes);
 app.use('/genres', genresRoutes);
 
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-});
+
+if (process.env.NODE_ENV !== 'test') {
+  const PORT = process.env.PORT || 5000;
+  server = app.listen(PORT, () => {
+      console.log(`Server is running on http://localhost:${PORT}`);
+  });
+}
+
+module.exports = { app, server };

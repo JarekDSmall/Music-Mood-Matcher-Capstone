@@ -1,138 +1,139 @@
-require('dotenv').config();
-const express = require('express');
-const bcrypt = require('bcrypt');
-const User = require('../models/user');
-const jwt = require('jsonwebtoken');
-const authenticateJWT = require('../middleware/auth');
+// require('dotenv').config();
+// const express = require('express');
+// const bcrypt = require('bcrypt');
+// const User = require('../models/user');
+// const jwt = require('jsonwebtoken');
+// const { authenticateJWT, authenticateSpotify } = require('../middleware/auth');
 
 
-const router = express.Router();
 
-// User Registration Route
-router.post('/register', async (req, res) => {
-    try {
-        const { username, email, password } = req.body;
+// const router = express.Router();
 
-        if (!username || !email || !password) {
-            return res.status(400).json({ message: 'Please provide all required fields.' });
-        }
+// // User Registration Route
+// // router.post('/register', async (req, res) => {
+// //     try {
+// //         const { username, email, password } = req.body;
 
-        const existingUser = await User.findOne({ email });
-        if (existingUser) {
-            return res.status(400).json({ message: 'User with this email already exists.' });
-        }
+// //         if (!username || !email || !password) {
+// //             return res.status(400).json({ message: 'Please provide all required fields.' });
+// //         }
 
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
+// //         const existingUser = await User.findOne({ email });
+// //         if (existingUser) {
+// //             return res.status(400).json({ message: 'User with this email already exists.' });
+// //         }
 
-        const newUser = new User({
-            username,
-            email,
-            hashedPassword
-        });
+// //         const salt = await bcrypt.genSalt(10);
+// //         const hashedPassword = await bcrypt.hash(password, salt);
 
-        await newUser.save();
-        res.status(201).json({ message: 'User registered successfully!', user: newUser });
+// //         const newUser = new User({
+// //             username,
+// //             email,
+// //             hashedPassword
+// //         });
 
-    } catch (error) {
-        console.error('Error registering user:', error);
-        res.status(500).json({ message: 'Server error. Please try again later.' });
-    }
-});
+// //         await newUser.save();
+// //         res.status(201).json({ message: 'User registered successfully!', user: newUser });
 
-// User login route
-router.post('/login', async (req, res) => {
-    try {
-        const { email, password } = req.body;
+// //     } catch (error) {
+// //         console.error('Error registering user:', error);
+// //         res.status(500).json({ message: 'Server error. Please try again later.' });
+// //     }
+// // });
 
-        // Check if email and password are provided
-        if (!email || !password) {
-            return res.status(400).json({ message: 'Please provide email and password.' });
-        }
+// // // User login route
+// // router.post('/login', async (req, res) => {
+// //     try {
+// //         const { email, password } = req.body;
 
-        // Check if user exists
-        const user = await User.findOne({ email });
-        if (!user) {
-            return res.status(400).json({ message: 'Invalid email or password.' });
-        }
+// //         // Check if email and password are provided
+// //         if (!email || !password) {
+// //             return res.status(400).json({ message: 'Please provide email and password.' });
+// //         }
 
-        // Compare provided password with stored hashed password
-        const isMatch = await bcrypt.compare(password, user.hashedPassword);
-        if (!isMatch) {
-            return res.status(400).json({ message: 'Invalid email or password.' });
-        }
+// //         // Check if user exists
+// //         const user = await User.findOne({ email });
+// //         if (!user) {
+// //             return res.status(400).json({ message: 'Invalid email or password.' });
+// //         }
 
-        // Generate JWT
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });  // Use the secret key from the .env file
+// //         // Compare provided password with stored hashed password
+// //         const isMatch = await bcrypt.compare(password, user.hashedPassword);
+// //         if (!isMatch) {
+// //             return res.status(400).json({ message: 'Invalid email or password.' });
+// //         }
 
-        res.status(200).json({ message: 'Logged in successfully!', token });
+// //         // Generate JWT
+// //         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });  // Use the secret key from the .env file
 
-    } catch (error) {
-        console.error('Error logging in user:', error);
-        res.status(500).json({ message: 'Server error. Please try again later.' });
-    }
-});
+// //         res.status(200).json({ message: 'Logged in successfully!', token });
 
-// View User Profile Route
-router.get('/profile', authenticateJWT, async (req, res) => {
-    try {
-        const userId = req.user.id;
-        const user = await User.findById(userId).select('-hashedPassword'); // Exclude the hashed password from the result
+// //     } catch (error) {
+// //         console.error('Error logging in user:', error);
+// //         res.status(500).json({ message: 'Server error. Please try again later.' });
+// //     }
+// // });
 
-        if (!user) {
-            return res.status(404).json({ message: 'User not found.' });
-        }
+// // View User Profile Route
+// router.get('/profile', authenticateJWT, async (req, res) => {
+//     try {
+//         const userId = req.user.id;
+//         const user = await User.findById(userId).select('-hashedPassword'); // Exclude the hashed password from the result
 
-        res.status(200).json(user);
-    } catch (error) {
-        console.error('Error fetching user profile:', error);
-        res.status(500).json({ message: 'Server error. Please try again later.' });
-    }
-});
+//         if (!user) {
+//             return res.status(404).json({ message: 'User not found.' });
+//         }
 
-// Update User Profile Route
-router.put('/profile', authenticateJWT, async (req, res) => {
-    try {
-        const userId = req.user.id;
-        const { username, email } = req.body;
+//         res.status(200).json(user);
+//     } catch (error) {
+//         console.error('Error fetching user profile:', error);
+//         res.status(500).json({ message: 'Server error. Please try again later.' });
+//     }
+// });
 
-        // Find the user by ID
-        const user = await User.findById(userId);
-        if (!user) {
-            return res.status(404).json({ message: 'User not found.' });
-        }
+// // Update User Profile Route
+// router.put('/profile', authenticateJWT, async (req, res) => {
+//     try {
+//         const userId = req.user.id;
+//         const { username, email } = req.body;
 
-        // Update the user's data
-        if (username) user.username = username;
-        if (email) user.email = email;
+//         // Find the user by ID
+//         const user = await User.findById(userId);
+//         if (!user) {
+//             return res.status(404).json({ message: 'User not found.' });
+//         }
 
-        await user.save();
+//         // Update the user's data
+//         if (username) user.username = username;
+//         if (email) user.email = email;
 
-        res.status(200).json({ message: 'Profile updated successfully!', user });
+//         await user.save();
 
-    } catch (error) {
-        console.error('Error updating user profile:', error);
-        res.status(500).json({ message: 'Server error. Please try again later.' });
-    }
-});
+//         res.status(200).json({ message: 'Profile updated successfully!', user });
 
-// Delete User Route
-router.delete('/delete', authenticateJWT, async (req, res) => {
-    try {
-        const userId = req.user.id;
+//     } catch (error) {
+//         console.error('Error updating user profile:', error);
+//         res.status(500).json({ message: 'Server error. Please try again later.' });
+//     }
+// });
+
+// // Delete User Route
+// router.delete('/delete', authenticateJWT, async (req, res) => {
+//     try {
+//         const userId = req.user.id;
         
-// TODO: Delete associated data (like playlists, songs, etc.)
-        // Delete the user
-        await User.findByIdAndDelete(userId);
+// // TODO: Delete associated data (like playlists, songs, etc.)
+//         // Delete the user
+//         await User.findByIdAndDelete(userId);
 
-        res.status(200).json({ message: 'User deleted successfully!' });
+//         res.status(200).json({ message: 'User deleted successfully!' });
 
-    } catch (error) {
-        console.error('Error deleting user:', error);
-        res.status(500).json({ message: 'Server error. Please try again later.' });
-    }
-});
+//     } catch (error) {
+//         console.error('Error deleting user:', error);
+//         res.status(500).json({ message: 'Server error. Please try again later.' });
+//     }
+// });
 
 
 
-module.exports = router;
+// module.exports = router;

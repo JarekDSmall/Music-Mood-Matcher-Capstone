@@ -2,10 +2,12 @@ const express = require('express');
 const axios = require('axios');
 const querystring = require('querystring');
 const passport = require('passport');
-const authenticateJWT = require('../middleware/auth');
+const { authenticateJWT } = require('../middleware/auth');
 const SpotifyWebApi = require('spotify-web-api-node');
 const jwt = require('jsonwebtoken');
 const base64 = require('base64-js');
+const User = require('../models/user'); // Adjust the path based on your directory structure
+
 
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3000';
 
@@ -66,11 +68,37 @@ router.get('/callback', async (req, res) => {
             }
         });
 
-        const userId = userProfileResponse.data.id;
+        const spotifyUserId = userProfileResponse.data.id;
+        res.cookie('spotifyUserId', spotifyUserId, {
+            httpOnly: true,
+            maxAge: 1000 * 60 * 60 * 24, // 1 day
+            sameSite: 'strict'
+        });
 
-        // Generating a JWT token using the received access and refresh tokens and the userId
-        const token = jwt.sign({ spotifyAccessToken: access_token, spotifyRefreshToken: refresh_token, userId: userId }, process.env.JWT_SECRET, { expiresIn: '1h' });
-        
+        let user = await User.findOne({ spotifyId: spotifyUserId });
+
+        if (!user) {
+            // If user doesn't exist, create a new user
+            user = new User({
+                spotifyId: spotifyUserId,
+                spotifyAccessToken: access_token,
+                spotifyRefreshToken: refresh_token,
+                spotifyTokenExpiration: new Date(Date.now() + 3600000)
+            });
+            await user.save();
+        } else {
+            // If user exists, update their tokens
+            user.spotifyAccessToken = access_token;
+            user.spotifyRefreshToken = refresh_token;
+            user.spotifyTokenExpiration = new Date(Date.now() + 3600000);
+            await user.save();
+        }
+
+        const mongoUserId = user._id;  // <-- Change this line
+
+        // Generating a JWT token using the received access and refresh tokens and the MongoDB userId
+        const token = jwt.sign({ spotifyAccessToken: access_token, spotifyRefreshToken: refresh_token, userId: mongoUserId }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
         // Setting the JWT token as a cookie
         res.cookie('spotifyAuthToken', token, {
             httpOnly: true,
@@ -87,7 +115,6 @@ router.get('/callback', async (req, res) => {
         res.status(500).json({ message: 'Failed to authenticate with Spotify.' });
     }
 });
-
 
 
 
@@ -114,6 +141,7 @@ router.get('/spotify-token', async (req, res) => {
 
 router.post('/disconnect', authenticateJWT, (req, res) => {
     res.clearCookie('spotifyAuthToken');
+    res.clearCookie('spotifyUserId'); // Clear the Spotify user ID cookie
     res.status(200).json({ message: 'Disconnected from Spotify successfully.' });
 });
 
@@ -236,12 +264,16 @@ router.get('/search', authenticateJWT, async (req, res) => {
 
 router.post('/create-playlist', authenticateJWT, async (req, res) => {
     const accessToken = req.user.spotifyAccessToken;
-    const userId = req.user.id;
-    const { playlistName, trackIds } = req.body;
+    const mongoUserId = req.user.userId; // Use MongoDB userId
+    const { playlistName, trackIds, description, public: isPublic } = req.body; // Renamed "public" to "isPublic" to avoid naming conflict
+
+    console.log(playlistName, description, isPublic);
 
     try {
-        const playlistResponse = await axios.post(`https://api.spotify.com/v1/users/${userId}/playlists`, {
-            name: playlistName
+        const playlistResponse = await axios.post(`https://api.spotify.com/v1/users/${mongoUserId}/playlists`, {
+            name: playlistName,
+            description: description,
+            public: isPublic
         }, {
             headers: {
                 'Authorization': `Bearer ${accessToken}`
@@ -266,8 +298,10 @@ router.post('/create-playlist', authenticateJWT, async (req, res) => {
     }
 });
 
+
 router.post('/refresh-token', authenticateJWT, async (req, res) => {
     const refreshToken = req.user.spotifyRefreshToken;
+    const mongoUserId = req.user.userId;
 
     try {
         const credentials = `${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`;
@@ -284,6 +318,13 @@ router.post('/refresh-token', authenticateJWT, async (req, res) => {
         });
 
         const newAccessToken = response.data.access_token;
+
+        // Update the user's database record with the new access token
+        await User.findOneAndUpdate({ _id: mongoUserId }, {
+            spotifyAccessToken: newAccessToken,
+            spotifyTokenExpiration: new Date(Date.now() + 3600000) // Assuming the token expires in 1 hour
+        });
+
         res.json({ access_token: newAccessToken });
 
     } catch (error) {
@@ -291,5 +332,6 @@ router.post('/refresh-token', authenticateJWT, async (req, res) => {
         res.status(500).json({ message: 'Failed to refresh Spotify token.' });
     }
 });
+
 
 module.exports = router;

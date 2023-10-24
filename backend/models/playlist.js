@@ -14,6 +14,14 @@ const playlistSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Song'
     }],
+    mood: {
+        type: String,
+        trim: true
+    },
+    spotifyId: {
+        type: String,
+        unique: true
+    },
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',

@@ -1,19 +1,39 @@
 const express = require('express');
 const Playlist = require('../models/playlist');
-const authenticateJWT = require('../middleware/auth');
+const { authenticateJWT, authenticateSpotify } = require('../middleware/auth');  // Changed to Spotify-specific authentication
 const mongoose = require('mongoose');
+const axios = require('axios'); // Added for making HTTP requests to Spotify API
 const router = express.Router();
 
+// Middleware to handle Spotify authentication
+router.use(authenticateSpotify);
+
 // Create a new playlist
-router.post('/create', authenticateJWT, async (req, res) => {
+// Create a new playlist on Spotify
+router.post('/create', authenticateSpotify, async (req, res) => {
     try {
         const { name, description, songs } = req.body;
-        const userId = req.user.id;
+        const userId = req.spotifyUserId;
 
+        // Create playlist on Spotify
+        const response = await axios.post(`https://api.spotify.com/v1/users/${userId}/playlists`, {
+            name: name,
+            description: description,
+            public: false
+        }, {
+            headers: {
+                'Authorization': `Bearer ${req.session.spotifyAccessToken}` // Include the Spotify access token in the request headers
+            }
+        });
+
+        const spotifyPlaylistId = response.data.id;
+
+        // Store the Spotify playlist ID in your database
         const newPlaylist = new Playlist({
             name,
             description,
             songs,
+            spotifyPlaylistId,
             userId
         });
 
@@ -26,90 +46,126 @@ router.post('/create', authenticateJWT, async (req, res) => {
     }
 });
 
-// Fetch all playlists for a user
-router.get('/', authenticateJWT, async (req, res) => {
+// Create a mood-based playlist
+router.post('/create-mood-playlist', authenticateSpotify, async (req, res) => {
     try {
-        const userId = req.user.id;
-        const playlists = await Playlist.find({ userId });
-        res.status(200).json(playlists);
+        const { mood, artists, playlistName } = req.body;
+        const userId = req.spotifyUserId;
+
+        // Use the Spotify API to fetch tracks based on mood and artists
+        // ... [logic to fetch tracks]
+
+        // Create playlist on Spotify
+        const response = await axios.post(`https://api.spotify.com/v1/users/${userId}/playlists`, {
+            name: playlistName,
+            description: `A ${mood} playlist featuring ${artists.join(', ')}`,
+            public: false
+        }, {
+            headers: {
+                'Authorization': `Bearer ${req.session.spotifyAccessToken}`
+            }
+        });
+
+        const spotifyPlaylistId = response.data.id;
+
+        // Store the Spotify playlist ID in your database
+        const newPlaylist = new Playlist({
+            name: playlistName,
+            description: `A ${mood} playlist featuring ${artists.join(', ')}`,
+            songs: [], // Add the fetched songs here
+            spotifyPlaylistId,
+            userId
+        });
+
+        await newPlaylist.save();
+        res.status(201).json({ message: 'Mood-based playlist created successfully!', playlist: newPlaylist });
+
     } catch (error) {
-        console.error('Error fetching playlists:', error);
+        console.error('Error creating mood-based playlist:', error);
         res.status(500).json({ message: 'Server error. Please try again later.' });
     }
 });
 
-// Update a playlist's details
-router.put('/:playlistId', authenticateJWT, async (req, res) => {
-    try {
-        const { name, description } = req.body;
-        const playlistId = req.params.playlistId;
-        const userId = req.user.id;
+// // Fetch all playlists for a user
+// router.get('/', authenticateJWT, async (req, res) => {
+//     try {
+//         const userId = req.user.id;
+//         const playlists = await Playlist.find({ userId });
+//         res.status(200).json(playlists);
+//     } catch (error) {
+//         console.error('Error fetching playlists:', error);
+//         res.status(500).json({ message: 'Server error. Please try again later.' });
+//     }
+// });
 
-        const playlist = await Playlist.findById(playlistId);
-        if (!playlist) {
-            return res.status(404).json({ message: 'Playlist not found.' });
-        }
+// // Update a playlist's details
+// router.put('/:playlistId', authenticateJWT, async (req, res) => {
+//     try {
+//         const { name, description } = req.body;
+//         const playlistId = req.params.playlistId;
+//         const userId = req.user.id;
 
-        // Check if the playlist belongs to the authenticated user
-        if (playlist.userId.toString() !== userId) {
-            return res.status(403).json({ message: 'You do not have permission to update this playlist.' });
-        }
+//         const playlist = await Playlist.findById(playlistId);
+//         if (!playlist) {
+//             return res.status(404).json({ message: 'Playlist not found.' });
+//         }
 
-        if (name) playlist.name = name;
-        if (description) playlist.description = description;
+//         // Check if the playlist belongs to the authenticated user
+//         if (playlist.userId.toString() !== userId) {
+//             return res.status(403).json({ message: 'You do not have permission to update this playlist.' });
+//         }
 
-        await playlist.save();
-        res.status(200).json({ message: 'Playlist updated successfully!', playlist });
+//         if (name) playlist.name = name;
+//         if (description) playlist.description = description;
 
-    } catch (error) {
-        console.error('Error updating playlist:', error);
-        res.status(500).json({ message: 'Server error. Please try again later.' });
-    }
-});
+//         await playlist.save();
+//         res.status(200).json({ message: 'Playlist updated successfully!', playlist });
+
+//     } catch (error) {
+//         console.error('Error updating playlist:', error);
+//         res.status(500).json({ message: 'Server error. Please try again later.' });
+//     }
+// });
 
 
-// Delete a playlist
-router.delete('/:playlistId', authenticateJWT, async (req, res) => {
-    try {
-        const playlistId = req.params.playlistId;
+// // Delete a playlist
+// router.delete('/:playlistId', authenticateJWT, async (req, res) => {
+//     try {
+//         const playlistId = req.params.playlistId;
+//         const userId = req.user.id;
 
-        const result = await Playlist.findByIdAndDelete(playlistId);
-        if (!result) {
-            return res.status(404).json({ message: 'Playlist not found.' });
-        }
+//         const playlist = await Playlist.findById(playlistId);
+//         if (!playlist) {
+//             return res.status(404).json({ message: 'Playlist not found.' });
+//         }
 
-        res.status(200).json({ message: 'Playlist deleted successfully!' });
+//         // Check if the playlist belongs to the authenticated user
+//         if (playlist.userId.toString() !== userId) {
+//             return res.status(403).json({ message: 'You do not have permission to delete this playlist.' });
+//         }
 
-    } catch (error) {
-        console.error('Error deleting playlist:', error);
-        res.status(500).json({ message: 'Server error. Please try again later.' });
-    }
-});
+//         await playlist.remove();
+//         res.status(200).json({ message: 'Playlist deleted successfully!' });
+
+//     } catch (error) {
+//         console.error('Error deleting playlist:', error);
+//         res.status(500).json({ message: 'Server error. Please try again later.' });
+//     }
+// });
 
 // Add songs to a playlist
-router.post('/:playlistId/add-songs', authenticateJWT, async (req, res) => {
+router.post('/:playlistId/add-songs', authenticateSpotify, async (req, res) => {
     try {
-        const songs = req.body.songs;
+        const songs = req.body.songs; // These should be Spotify track URIs
         const playlistId = req.params.playlistId;
 
-        // Check if songs is an array
-        if (!Array.isArray(songs)) {
-            return res.status(400).json({ message: 'Invalid songs format. Expected an array of song IDs.' });
-        }
+        // Add songs to Spotify playlist
+        await axios.post(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
+            uris: songs
+        });
 
-        // Validate each song ID
-        for (let songId of songs) {
-            if (!mongoose.Types.ObjectId.isValid(songId)) {
-                return res.status(400).json({ message: `Invalid song ID: ${songId}` });
-            }
-        }
-
+        // Update local database if necessary
         const playlist = await Playlist.findById(playlistId);
-        if (!playlist) {
-            return res.status(404).json({ message: 'Playlist not found.' });
-        }
-
-        // Add songs to the playlist
         playlist.songs.push(...songs);
         await playlist.save();
 
@@ -121,46 +177,46 @@ router.post('/:playlistId/add-songs', authenticateJWT, async (req, res) => {
     }
 });
 
-// Remove songs from a playlist
-router.post('/:playlistId/remove-songs', authenticateJWT, async (req, res) => {
-    try {
-        const { songs } = req.body;
-        const playlistId = req.params.playlistId;
+// // Remove songs from a playlist
+// router.post('/:playlistId/remove-songs', authenticateJWT, async (req, res) => {
+//     try {
+//         const { songs } = req.body;
+//         const playlistId = req.params.playlistId;
 
-        const playlist = await Playlist.findById(playlistId);
-        if (!playlist) {
-            return res.status(404).json({ message: 'Playlist not found.' });
-        }
+//         const playlist = await Playlist.findById(playlistId);
+//         if (!playlist) {
+//             return res.status(404).json({ message: 'Playlist not found.' });
+//         }
 
-        playlist.songs = playlist.songs.filter(songId => !songs.includes(songId));
-        await playlist.save();
+//         playlist.songs = playlist.songs.filter(songId => !songs.includes(songId));
+//         await playlist.save();
 
-        res.status(200).json({ message: 'Songs removed from playlist successfully!', playlist });
+//         res.status(200).json({ message: 'Songs removed from playlist successfully!', playlist });
 
-    } catch (error) {
-        console.error('Error removing songs from playlist:', error);
-        res.status(500).json({ message: 'Server error. Please try again later.' });
-    }
-});
+//     } catch (error) {
+//         console.error('Error removing songs from playlist:', error);
+//         res.status(500).json({ message: 'Server error. Please try again later.' });
+//     }
+// });
 
 // View a specific playlist
-router.get('/:playlistId', authenticateJWT, async (req, res) => {
-    try {
-        const { playlistId } = req.params;
+// router.get('/:playlistId', authenticateJWT, async (req, res) => {
+//     try {
+//         const { playlistId } = req.params;
 
-        // Fetch the playlist by its ID
-        const playlist = await Playlist.findById(playlistId).populate('songs'); // This will also fetch the song details associated with the playlist
+//         // Fetch the playlist by its ID
+//         const playlist = await Playlist.findById(playlistId).populate('songs'); // This will also fetch the song details associated with the playlist
 
-        if (!playlist) {
-            return res.status(404).json({ message: 'Playlist not found.' });
-        }
+//         if (!playlist) {
+//             return res.status(404).json({ message: 'Playlist not found.' });
+//         }
 
-        res.status(200).json(playlist);
-    } catch (error) {
-        console.error('Error fetching the playlist:', error);
-        res.status(500).json({ message: 'Server error. Please try again later.' });
-    }
-});
+//         res.status(200).json(playlist);
+//     } catch (error) {
+//         console.error('Error fetching the playlist:', error);
+//         res.status(500).json({ message: 'Server error. Please try again later.' });
+//     }
+// });
 
 
 module.exports = router;

@@ -1,23 +1,25 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-    username: {
+    spotifyId: {
         type: String,
-        required: true,
         unique: true
-    },
-    email: {
-        type: String,
-        required: true,
-        unique: true
-    },
-    hashedPassword: {
-        type: String,
-        required: true
     },
     profile: {
         type: Object,
         default: {}
+    },
+    spotifyAccessToken: {
+        type: String,
+        default: null
+    },
+    spotifyRefreshToken: {
+        type: String,
+        default: null
+    },
+    spotifyTokenExpiration: {
+        type: Date,
+        default: null
     }
 });
 

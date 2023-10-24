@@ -1,9 +1,14 @@
-// models/Mood.js
 const mongoose = require('mongoose');
 
 const moodSchema = new mongoose.Schema({
-    name: String
+    name: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    description: String
 });
 
-module.exports = mongoose.model('Mood', moodSchema);
+const Mood = mongoose.model('Mood', moodSchema);
 
+module.exports = Mood;
