@@ -69,11 +69,6 @@ router.get('/callback', async (req, res) => {
         });
 
         const spotifyUserId = userProfileResponse.data.id;
-        res.cookie('spotifyUserId', spotifyUserId, {
-            httpOnly: true,
-            maxAge: 1000 * 60 * 60 * 24, // 1 day
-            sameSite: 'strict'
-        });
 
         let user = await User.findOne({ spotifyId: spotifyUserId });
 
@@ -94,27 +89,16 @@ router.get('/callback', async (req, res) => {
             await user.save();
         }
 
-        const mongoUserId = user._id;  // <-- Change this line
-
-        // Generating a JWT token using the received access and refresh tokens and the MongoDB userId
-        const token = jwt.sign({ spotifyAccessToken: access_token, spotifyRefreshToken: refresh_token, userId: mongoUserId }, process.env.JWT_SECRET, { expiresIn: '1h' });
-
-        // Setting the JWT token as a cookie
-        res.cookie('spotifyAuthToken', token, {
-            httpOnly: true,
-            secure: true,
-            maxAge: 3600000,
-            sameSite: 'strict'
-        });
-
-        // Redirecting to the frontend dashboard after setting the cookie
-        res.redirect(`${FRONTEND_URL}/dashboard`);
+        // Redirecting to the frontend Spotify page after setting the cookie
+        res.redirect(`${FRONTEND_URL}/spotify`);
 
     } catch (error) {
         console.error('Error in Spotify callback:', error);
         res.status(500).json({ message: 'Failed to authenticate with Spotify.' });
     }
 });
+
+
 
 
 

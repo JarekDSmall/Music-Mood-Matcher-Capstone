@@ -9,7 +9,7 @@ function SpotifyRedirect() {
         const code = urlParams.get('code');
 
         if (code) {
-            // Send the code to the backend to get the JWT token
+            // Send the code to the backend to get the Spotify access token
             fetch('http://localhost:5000/spotify/callback', {
                 method: 'GET',
                 headers: {
@@ -18,17 +18,17 @@ function SpotifyRedirect() {
             })
             .then(response => response.json())
             .then(data => {
-                const token = data.token;
-                if (token) {
-                    localStorage.setItem('spotifyAuthToken', token);
-                    navigate('/dashboard');
+                const accessToken = data.access_token;
+                if (accessToken) {
+                    localStorage.setItem('spotifyAccessToken', accessToken);
+                    navigate('/spotify');  // Redirect to SpotifyPage
                 } else {
-                    console.error("Token not received from backend");
+                    console.error("Access token not received from backend");
                     navigate('/');
                 }
             })
             .catch(error => {
-                console.error("Error fetching token from backend:", error);
+                console.error("Error fetching access token from backend:", error);
                 navigate('/');
             });
         } else {
@@ -39,6 +39,5 @@ function SpotifyRedirect() {
 
     return null;
 }
-
 
 export default SpotifyRedirect;

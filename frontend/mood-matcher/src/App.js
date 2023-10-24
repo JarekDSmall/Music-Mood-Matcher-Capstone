@@ -18,11 +18,11 @@ import GenreSelection from './components/playlist/GenreSelection';
 // Spotify Components
 import SpotifyAuth from './components/spotify/SpotifyLogin'; 
 import SpotifyRedirect from './components/spotify/SpotifyRedirect';
+import SpotifyPage from './pages/SpotifyPage';  // New import
 
 // Pages
 import HomePage from './pages/HomePage';
-import DashboardPage from './pages/DashboardPage';
-import Recommendations from './pages/Recommendations';  // <-- New import
+import Recommendations from './pages/Recommendations';
 
 // Context
 import { AuthProvider } from './context/authContext';
@@ -54,8 +54,8 @@ function App() {
 
               <Route path="/spotify-auth" element={<SpotifyAuth />} />
               <Route path="/spotify-dashboard" element={<SpotifyRedirect />} />
-              <Route path="/dashboard" element={<PrivateRouteWrapper><DashboardPage /></PrivateRouteWrapper>} />
-              <Route path="/recommendations" element={<PrivateRouteWrapper><Recommendations /></PrivateRouteWrapper>} />  {/* <-- New Route */}
+              <Route path="/spotify" element={<PrivateRouteWrapper><SpotifyPage /></PrivateRouteWrapper>} />  // Updated route
+              <Route path="/recommendations" element={<PrivateRouteWrapper><Recommendations /></PrivateRouteWrapper>} />
               <Route path="/process-token" element={<ProcessToken />} />
               {/* <Route path="*" element={<NotFoundPage />} /> */}
             </Routes>
