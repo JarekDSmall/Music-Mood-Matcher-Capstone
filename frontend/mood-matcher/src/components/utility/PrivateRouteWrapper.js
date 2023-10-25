@@ -5,6 +5,7 @@ import { AuthContext } from '../../context/authContext';
 const PrivateRouteWrapper = ({ children }) => {
   const { isAuthenticated } = useContext(AuthContext);
 
+  console.log("PrivateRouteWrapper isAuthenticated:", isAuthenticated); // Logging for debugging
   return isAuthenticated ? children : <Navigate to="/login" replace />;
 };
 

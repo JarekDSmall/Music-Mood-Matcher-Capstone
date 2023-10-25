@@ -1,41 +1,45 @@
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState, useContext } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../context/authContext';
 
 function SpotifyRedirect() {
+    const location = useLocation();
     const navigate = useNavigate();
+    const [isTokenProcessed, setIsTokenProcessed] = useState(false);
+    const urlParams = new URLSearchParams(location.search);
+    const { loginWithSpotifyToken } = useContext(AuthContext);
 
     useEffect(() => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const code = urlParams.get('code');
+        console.log("SpotifyRedirect useEffect triggered");
+        if (!isTokenProcessed) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const rawToken = urlParams.get('token');
+            const token = rawToken ? rawToken.trim() : null;
 
-        if (code) {
-            // Send the code to the backend to get the Spotify access token
-            fetch('http://localhost:5000/spotify/callback', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                const accessToken = data.access_token;
-                if (accessToken) {
-                    localStorage.setItem('spotifyAccessToken', accessToken);
-                    navigate('/spotify');  // Redirect to SpotifyPage
-                } else {
-                    console.error("Access token not received from backend");
-                    navigate('/');
-                }
-            })
-            .catch(error => {
-                console.error("Error fetching access token from backend:", error);
+            console.log("Extracted Token:", token);
+
+            if (token) {
+                localStorage.setItem('spotifyAccessToken', token);
+                loginWithSpotifyToken(token);
+                setIsTokenProcessed(true);
+                console.log("Navigating to /spotify");
+                navigate('/spotify', { replace: true });  // Redirect to SpotifyPage with URL cleanup
+            } else {
+                console.error("Token not found in URL");
+                console.log("Navigating to /");
                 navigate('/');
-            });
-        } else {
-            console.error("Code not found in URL");
-            navigate('/');
+            }
         }
-    }, [navigate]);
+    }, [navigate, isTokenProcessed, loginWithSpotifyToken]);
+
+    // Fallback redirect mechanism
+    useEffect(() => {
+        const tokenInLocalStorage = localStorage.getItem('spotifyAccessToken');
+        if (tokenInLocalStorage && location.pathname !== '/spotify') {
+            console.log("Fallback redirect to /spotify");
+            navigate('/spotify');
+        }
+    }, [navigate, location.pathname]);
 
     return null;
 }

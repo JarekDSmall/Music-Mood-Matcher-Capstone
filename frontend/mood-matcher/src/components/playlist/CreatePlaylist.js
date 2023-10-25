@@ -1,10 +1,18 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import SearchBar from './SearchBar';
 import SearchResults from './SearchResults';
 import { PlaylistContext } from '../context/PlaylistContext';
 
 function CreatePlaylist() {
     const { mood, setMood, genre, setGenre, artist, setArtist, currentTracks } = useContext(PlaylistContext);
+
+    // State to store selected tracks for the playlist
+    const [selectedTracks, setSelectedTracks] = useState([]);
+
+    // Function to add a track to the playlist
+    const addTrackToPlaylist = (track) => {
+        setSelectedTracks(prevTracks => [...prevTracks, track]);
+    };
 
     return (
         <div>
@@ -28,7 +36,7 @@ function CreatePlaylist() {
             <input type="text" value={artist} onChange={(e) => setArtist(e.target.value)} placeholder="Artist (optional)" />
 
             <SearchBar />
-            <SearchResults tracks={currentTracks} />
+            <SearchResults tracks={currentTracks} onAddTrack={addTrackToPlaylist} />
             <button>Finalize Playlist</button>
         </div>
     );

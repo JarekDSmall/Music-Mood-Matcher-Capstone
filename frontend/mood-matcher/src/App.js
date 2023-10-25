@@ -53,7 +53,7 @@ function App() {
               <Route path="/create-playlist/tracks" element={<PrivateRouteWrapper><PlaylistCreation /></PrivateRouteWrapper>} />
 
               <Route path="/spotify-auth" element={<SpotifyAuth />} />
-              <Route path="/spotify-dashboard" element={<SpotifyRedirect />} />
+              <Route path="/spotify/process-token" element={<SpotifyRedirect />} />
               <Route path="/spotify" element={<PrivateRouteWrapper><SpotifyPage /></PrivateRouteWrapper>} />  // Updated route
               <Route path="/recommendations" element={<PrivateRouteWrapper><Recommendations /></PrivateRouteWrapper>} />
               <Route path="/process-token" element={<ProcessToken />} />

@@ -5,9 +5,21 @@ const userSchema = new mongoose.Schema({
         type: String,
         unique: true
     },
-    profile: {
-        type: Object,
-        default: {}
+    displayName: {
+        type: String,
+        default: ''
+    },
+    profilePicture: {
+        type: String,
+        default: ''
+    },
+    country: {
+        type: String,
+        default: ''
+    },
+    followersCount: {
+        type: Number,
+        default: 0
     },
     spotifyAccessToken: {
         type: String,

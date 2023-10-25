@@ -7,35 +7,22 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }) => {
-    const [currentUser, setCurrentUser] = useState(null);
     const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem('spotifyAuthToken') !== null);
 
-
-    const login = (user) => {
-        setCurrentUser(user);
+    const loginWithSpotifyToken = (token) => {
+        localStorage.setItem('spotifyAuthToken', token);
         setIsAuthenticated(true);
-        localStorage.setItem('isAuthenticated', 'true');
     };
     
-    const logout = () => {
-        setCurrentUser(null);
+    const logoutFromSpotify = () => {
         setIsAuthenticated(false);
-        localStorage.removeItem('isAuthenticated');
+        localStorage.removeItem('spotifyAuthToken'); // Clearing the Spotify token from local storage
     };    
 
-    const register = async (email, password) => {
-        // Here, you'll typically call your backend API to register the user.
-        // For now, I'll just simulate a successful registration.
-        setCurrentUser({ email }); // This is just a mock. Replace with actual user data from your backend.
-        setIsAuthenticated(true);
-    };
-
     const contextValue = {
-        currentUser,
         isAuthenticated,
-        login,
-        logout,
-        register  // <-- Added the register function here
+        loginWithSpotifyToken,
+        logoutFromSpotify
     };
 
     return (
@@ -44,4 +31,3 @@ export const AuthProvider = ({ children }) => {
         </AuthContext.Provider>
     );
 };
-

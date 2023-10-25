@@ -68,21 +68,21 @@ router.get('/callback', async (req, res) => {
             }
         });
 
-        const spotifyUserId = userProfileResponse.data.id;
+        const spotifyUserProfile = userProfileResponse.data;
 
-        let user = await User.findOne({ spotifyId: spotifyUserId });
-
+        let user = await User.findOne({ spotifyId: spotifyUserProfile.id });
+        
         if (!user) {
-            // If user doesn't exist, create a new user
             user = new User({
-                spotifyId: spotifyUserId,
+                spotifyId: spotifyUserProfile.id,
+                profile: spotifyUserProfile,
                 spotifyAccessToken: access_token,
                 spotifyRefreshToken: refresh_token,
                 spotifyTokenExpiration: new Date(Date.now() + 3600000)
             });
             await user.save();
         } else {
-            // If user exists, update their tokens
+            user.profile = spotifyUserProfile;
             user.spotifyAccessToken = access_token;
             user.spotifyRefreshToken = refresh_token;
             user.spotifyTokenExpiration = new Date(Date.now() + 3600000);
@@ -90,15 +90,14 @@ router.get('/callback', async (req, res) => {
         }
 
         // Redirecting to the frontend Spotify page after setting the cookie
-        res.redirect(`${FRONTEND_URL}/spotify`);
+        res.redirect(`${FRONTEND_URL}/spotify/process-token?token=${access_token}`);
+
 
     } catch (error) {
         console.error('Error in Spotify callback:', error);
         res.status(500).json({ message: 'Failed to authenticate with Spotify.' });
     }
 });
-
-
 
 
 
@@ -185,6 +184,25 @@ router.get('/top-tracks', authenticateJWT, async (req, res) => {
         } else {
             res.status(500).json({ message: 'Failed to fetch top tracks from Spotify.' });
         }
+    }
+});
+
+router.get('/user-playlists', authenticateJWT, async (req, res) => {
+    const accessToken = req.user.spotifyAccessToken;
+
+    try {
+        const response = await axios.get('https://api.spotify.com/v1/me/playlists', {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            }
+        });
+
+        const playlists = response.data.items;
+        res.json(playlists);
+
+    } catch (error) {
+        console.error('Error fetching user playlists:', error);
+        res.status(500).json({ message: 'Failed to fetch user playlists from Spotify.' });
     }
 });
 

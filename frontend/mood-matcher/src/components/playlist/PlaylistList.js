@@ -1,10 +1,16 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import '../../styles/Playlist.css';
 
-
 function PlaylistList() {
-    // Sample data for now
-    const playlists = ['Chill Vibes', 'Workout Mix', 'Golden Oldies'];
+    const [playlists, setPlaylists] = useState([]);
+
+    useEffect(() => {
+        // Fetch user's playlists from the backend
+        fetch('/spotify/user-playlists') // Adjust the endpoint if needed
+            .then(response => response.json())
+            .then(data => setPlaylists(data.map(playlist => playlist.name))) // Extracting playlist names
+            .catch(error => console.error('Error fetching playlists:', error));
+    }, []);
 
     return (
         <div className="playlist-list">
