@@ -23,6 +23,7 @@ import SpotifyPage from './pages/SpotifyPage';  // New import
 // Pages
 import FrontPage from './pages/FrontPage';
 import Recommendations from './pages/Recommendations';
+import MoodPlaylistCreator from './pages/MoodPlaylistCreator';
 
 // Context
 import { AuthProvider } from './context/authContext';
@@ -56,6 +57,7 @@ function App() {
               <Route path="/spotify" element={<PrivateRouteWrapper><SpotifyPage /></PrivateRouteWrapper>} />  // Updated route
               <Route path="/spotify/process-token" element={<SpotifyRedirect />} />
               <Route path="/recommendations" element={<PrivateRouteWrapper><Recommendations /></PrivateRouteWrapper>} />
+              <Route path="/mood-playlist-creator" element={<MoodPlaylistCreator />} />
               {/* <Route path="/process-token" element={<ProcessToken />} /> */}
               {/* <Route path="*" element={<NotFoundPage />} /> */}
             </Routes>

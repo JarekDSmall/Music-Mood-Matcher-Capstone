@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // Import useHistory for navigation
 
 function SpotifyPage() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -119,7 +120,6 @@ const fetchPlaylists = async (token) => {
     };
     
   
-
     const initiateSpotifyLogin = () => {
         const popup = window.open('/spotify-auth', 'Spotify Login', 'width=600,height=400');
         window.spotifyLoginCallback = function(token) {
@@ -137,6 +137,12 @@ const fetchPlaylists = async (token) => {
         setIsAuthenticated(false);
     };
 
+    const navigate = useNavigate() // Use the useHistory hook for navigation
+
+    const navigateToMoodPlaylistCreator = () => {
+        navigate('/mood-playlist-creator');
+    };
+
     return (
         <div>
             <h1>Welcome, {userProfile.displayName}!</h1>
@@ -148,19 +154,20 @@ const fetchPlaylists = async (token) => {
             ) : (
                 <div>
                     <h2>Your Top Tracks</h2>
-            <ul>
-                {userTopTracks.map(track => (
-                    <li key={track.id}>
-                        {track.name} by {track.artists[0].name}
-                    </li>
-                ))}
-            </ul>
+                    <ul>
+                        {userTopTracks.map(track => (
+                            <li key={track.id}>
+                                {track.name} by {track.artists[0].name}
+                            </li>
+                        ))}
+                    </ul>
                     <h2>Your Playlists</h2>
                     <ul>
                         {playlists.map(playlist => (
                             <li key={playlist.id}>{playlist.name}</li>
                         ))}
                     </ul>
+                    <button onClick={navigateToMoodPlaylistCreator}>Create a Mood Playlist</button> {/* Added button */}
                     <button onClick={handleSpotifyLogout}>Logout from Spotify</button>
                 </div>
             )}
