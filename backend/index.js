@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const morgan = require('morgan');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
@@ -24,6 +25,8 @@ const moodRoutes = require('./routes/mood');
 const genresRoutes = require('./routes/genres');
 
 const app = express();
+// Add morgan middleware for logging
+app.use(morgan('combined'));
 let server;
 
 

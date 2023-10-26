@@ -21,7 +21,7 @@ import SpotifyRedirect from './components/spotify/SpotifyRedirect';
 import SpotifyPage from './pages/SpotifyPage';  // New import
 
 // Pages
-import HomePage from './pages/HomePage';
+import FrontPage from './pages/FrontPage';
 import Recommendations from './pages/Recommendations';
 
 // Context
@@ -30,7 +30,7 @@ import { UserProvider } from './context/UserContext';
 import { PlaylistProvider } from './context/PlaylistContext'; 
 
 import PrivateRouteWrapper from './components/utility/PrivateRouteWrapper';
-import ProcessToken from './components/utility/ProcessToken';
+// import ProcessToken from './components/utility/ProcessToken';
 
 function App() {
   return (
@@ -40,7 +40,7 @@ function App() {
           <PlaylistProvider>
             <Navbar />
             <Routes>
-              <Route path="/" element={<HomePage />} />
+              <Route path="/" element={<FrontPage />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/profile" element={<PrivateRouteWrapper><Profile /></PrivateRouteWrapper>} />
@@ -53,10 +53,10 @@ function App() {
               <Route path="/create-playlist/tracks" element={<PrivateRouteWrapper><PlaylistCreation /></PrivateRouteWrapper>} />
 
               <Route path="/spotify-auth" element={<SpotifyAuth />} />
-              <Route path="/spotify/process-token" element={<SpotifyRedirect />} />
               <Route path="/spotify" element={<PrivateRouteWrapper><SpotifyPage /></PrivateRouteWrapper>} />  // Updated route
+              <Route path="/spotify/process-token" element={<SpotifyRedirect />} />
               <Route path="/recommendations" element={<PrivateRouteWrapper><Recommendations /></PrivateRouteWrapper>} />
-              <Route path="/process-token" element={<ProcessToken />} />
+              {/* <Route path="/process-token" element={<ProcessToken />} /> */}
               {/* <Route path="*" element={<NotFoundPage />} /> */}
             </Routes>
           </PlaylistProvider>

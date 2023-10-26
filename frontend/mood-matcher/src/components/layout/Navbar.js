@@ -22,32 +22,7 @@ const Navbar = () => {
                 <Link to="/" className="navbar-logo">
                     MoodMatcher
                 </Link>
-                <ul className="navbar-menu">
-                    <li className={location.pathname === "/" ? "active" : ""}>
-                        <Link to="/">Home</Link>
-                    </li>
-                    {!currentUser && (
-                        <>
-                            <li className={location.pathname === "/login" ? "active" : ""}>
-                                <Link to="/login">Login</Link>
-                            </li>
-                            <li className={location.pathname === "/register" ? "active" : ""}>
-                                <Link to="/register">Register</Link>
-                            </li>
-                        </>
-                    )}
-                    {currentUser && (
-                        <>
-                            <li className={location.pathname === "/profile" ? "active" : ""}>
-                                <Link to="/profile">Profile</Link>
-                            </li>
-                            <li>
-                                <button className="navbar-menu" onClick={handleLogout}>Logout</button>
-                            </li>
-                        </>
-                    )}
-                    {/* Add more links as needed */}
-                </ul>
+  
             </div>
         </nav>
     );

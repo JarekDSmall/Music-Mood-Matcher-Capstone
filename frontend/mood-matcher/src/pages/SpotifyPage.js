@@ -9,7 +9,7 @@ function SpotifyPage() {
         country: '',
         followersCount: 0
     });
-    const [topTracks, setTopTracks] = useState([]);
+    const [userTopTracks, setUserTopTracks] = useState([]);
     const [playlists, setPlaylists] = useState([]);
     const [timeRange, setTimeRange] = useState('short_term');
 
@@ -20,7 +20,7 @@ function SpotifyPage() {
             console.log("Token found in localStorage:", token);
             setIsAuthenticated(true);
             fetchUserProfile(token);
-            fetchTopTracks(token);
+            fetchUserTopTracks(token);
             fetchPlaylists(token);
         } else {
             console.warn("Token not found in localStorage");
@@ -47,34 +47,78 @@ function SpotifyPage() {
         }
     };
 
-    const fetchTopTracks = async (token) => {
-        console.log("Fetching top tracks");
+    const handleUnauthorizedError = async (retryFunction) => {
+        const newToken = await refreshToken();
+        if (newToken) {
+            return retryFunction(newToken);
+        } else {
+            console.error("Failed to refresh token");
+            return null;
+        }
+    };
+
+    const fetchUserTopTracks = async (token) => {
+    try {
+        const response = await axios.get('https://api.spotify.com/v1/me/top/tracks', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        setUserTopTracks(response.data.items); // Assuming the tracks are in the 'items' property
+    } catch (error) {
+        if (error.response && error.response.status === 401) {
+            return handleUnauthorizedError(fetchUserTopTracks);
+        }
+        console.error('Error fetching user top tracks:', error);
+    }
+};
+
+    
+    
+const fetchPlaylists = async (token) => {
+    try {
+        const response = await axios.get('https://api.spotify.com/v1/me/playlists', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        setPlaylists(response.data.items); // Assuming the playlists are in the 'items' property
+    } catch (error) {
+        if (error.response && error.response.status === 401) {
+            return handleUnauthorizedError(fetchPlaylists);
+        }
+        console.error("Error fetching playlists:", error);
+    }
+};
+
+    
+    const refreshToken = async () => {
         try {
-            const response = await axios.get(`/spotify/top-tracks?time_range=${timeRange}`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+            // Assuming you store the refresh token in local storage. Retrieve it.
+            const storedRefreshToken = localStorage.getItem('spotifyRefreshToken');
+    
+            // Send the refresh token to your backend (if required)
+            const response = await axios.post('http://localhost:5000/spotify/refresh-token', {
+                refreshToken: storedRefreshToken
             });
-            setTopTracks(response.data);
+    
+            const newToken = response.data.access_token;
+    
+            if (newToken) {
+                localStorage.setItem('spotifyAccessToken', newToken); // Update the token in local storage
+                return newToken;
+            } else {
+                console.error("No access token received from refresh endpoint.");
+                return null;
+            }
         } catch (error) {
-            console.error("Error fetching top tracks:", error);
+            console.error("Error refreshing token:", error);
+            // Optionally, handle the error more gracefully here, e.g., redirect to login
+            return null;
         }
     };
     
-
-    const fetchPlaylists = async (token) => {  // Function to fetch playlists
-        console.log("Fetching playlists");
-        try {
-            const response = await axios.get('/spotify/user-playlists', {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-            setPlaylists(response.data);
-        } catch (error) {
-            console.error("Error fetching playlists:", error);
-        }
-    };
+  
 
     const initiateSpotifyLogin = () => {
         const popup = window.open('/spotify-auth', 'Spotify Login', 'width=600,height=400');
@@ -82,7 +126,7 @@ function SpotifyPage() {
             localStorage.setItem('spotifyAccessToken', token);
             setIsAuthenticated(true);
             fetchUserProfile(token);
-            fetchTopTracks(token);
+            fetchUserTopTracks(token);
             fetchPlaylists(token);
             popup.close();
         };
@@ -104,16 +148,13 @@ function SpotifyPage() {
             ) : (
                 <div>
                     <h2>Your Top Tracks</h2>
-                    <select value={timeRange} onChange={(e) => setTimeRange(e.target.value)}>
-                        <option value="short_term">Last 4 Weeks</option>
-                        <option value="medium_term">Last 6 Months</option>
-                        <option value="long_term">All Time</option>
-                    </select>
-                    <ul>
-                        {topTracks.map(track => (
-                            <li key={track.id}>{track.name} by {track.artists[0].name}</li>
-                        ))}
-                    </ul>
+            <ul>
+                {userTopTracks.map(track => (
+                    <li key={track.id}>
+                        {track.name} by {track.artists[0].name}
+                    </li>
+                ))}
+            </ul>
                     <h2>Your Playlists</h2>
                     <ul>
                         {playlists.map(playlist => (
