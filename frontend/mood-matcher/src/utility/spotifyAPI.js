@@ -87,3 +87,23 @@ export const fetchRecommendations = async (seedTracks) => {
     const data = await response.json();
     return data.tracks;
 };
+
+export const addTracksToPlaylist = async (playlistId, trackUris) => {
+    try {
+        const response = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${getAccessToken()}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                uris: trackUris
+            })
+        });
+        if (!response.ok) throw new Error(response.statusText);
+        return true;
+    } catch (error) {
+        console.error("Error adding tracks to playlist:", error);
+        return false;
+    }
+};

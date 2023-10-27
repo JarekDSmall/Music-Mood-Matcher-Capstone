@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { searchTracks, createPlaylist, fetchUserProfile, fetchRecommendations } from '../utility/spotifyAPI';
+import { searchTracks, createPlaylist, fetchUserProfile, fetchRecommendations, addTracksToPlaylist } from '../utility/spotifyAPI';
+
 
 function MoodPlaylistCreator() {
     const [mood, setMood] = useState('');
@@ -49,11 +50,25 @@ function MoodPlaylistCreator() {
         }
         try {
             const playlist = await createPlaylist(userId, `Mood Playlist - ${mood}`, `A playlist based on ${mood} mood with ${moodIntensity}% intensity.`);
-            console.log("Playlist created successfully:", playlist);
+            if (playlist && playlist.id) {
+                // Add tracks to the created playlist
+                const trackUris = tracks.map(track => track.uri);
+                const success = await addTracksToPlaylist(playlist.id, trackUris);
+                if (success) {
+                    console.log("Tracks added to the playlist successfully.");
+                    // Provide a link to the created playlist
+                    window.alert(`Playlist created successfully! You can view it here: https://open.spotify.com/playlist/${playlist.id}`);
+                } else {
+                    console.error("Error adding tracks to the playlist.");
+                }
+            } else {
+                console.error("Error creating playlist.");
+            }
         } catch (error) {
-            console.error("Error creating playlist:", error);
+            console.error("Error in handleSubmit:", error);
         }
     };
+    
 
     return (
         <div>
