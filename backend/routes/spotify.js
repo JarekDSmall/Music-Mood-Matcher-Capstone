@@ -212,6 +212,7 @@ router.get('/track-features/:trackId', authenticateJWT, async (req, res) => {
     }
 });
 
+
 router.get('/search', authenticateJWT, async (req, res) => {
     const accessToken = req.user.spotifyAccessToken;
     const query = req.query.q;
@@ -277,6 +278,63 @@ router.post('/create-playlist',
     }
 );
 
+router.get('/mood-playlist', authenticateJWT, async (req, res) => {
+    const accessToken = req.user.spotifyAccessToken;
+    const mood = req.query.mood;
+    const intensity = req.query.intensity;
+
+    try {
+        // Determine the audio features based on mood and intensity
+        const audioFeatures = determineAudioFeatures(mood, intensity);
+
+        // Fetch track recommendations based on audio features
+        const recommendations = await axios.get('https://api.spotify.com/v1/recommendations', {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            },
+            params: {
+                limit: 20, // You can adjust the number of tracks you want
+                target_danceability: audioFeatures.danceability,
+                target_energy: audioFeatures.energy,
+                target_valence: audioFeatures.valence,
+                // Add more audio features as needed
+            }
+        });
+
+        res.json(recommendations.data.tracks);
+
+    } catch (error) {
+        console.error('Error fetching mood playlist:', error);
+        res.status(500).json({ message: 'Failed to fetch mood playlist from Spotify.' });
+    }
+});
+
+function determineAudioFeatures(mood, intensity) {
+    // Logic to determine audio features based on mood and intensity
+    const features = {
+        danceability: 0.5,
+        energy: 0.5,
+        valence: 0.5
+    };
+
+    switch (mood) {
+        case 'Happy':
+            features.valence = intensity / 100;
+            break;
+        case 'Sad':
+            features.valence = 1 - (intensity / 100);
+            break;
+        case 'Energetic':
+            features.energy = intensity / 100;
+            break;
+        case 'Calm':
+            features.energy = 1 - (intensity / 100);
+            break;
+        // Add more moods as needed
+    }
+
+    return features;
+}
 
 router.post('/refresh-token', authenticateJWT, async (req, res) => {
     const refreshToken = req.user.spotifyRefreshToken;

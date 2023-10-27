@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { usePlaylist } from '../../context/PlaylistContext'; // Assuming this is the correct path to your context
+
 
 function MoodSelection() {
     const [selectedMood, setSelectedMood] = useState(null);
-    const { setMood } = usePlaylist();
+    const [moodIntensity, setMoodIntensity] = useState(50); // Default value for the slider
     const navigate = useNavigate();
     const moods = ['Happy', 'Sad', 'Energetic', 'Calm'];
 
     const handleMoodSelect = (mood) => {
         setSelectedMood(mood);
-        setMood(mood);
-        navigate('/next-route'); // Navigate to the next step or route
+        navigate(`/mood-playlist-creator?mood=${mood}&intensity=${moodIntensity}`); // Navigate to the MoodPlaylistCreator with mood and intensity as query parameters
+    };
+
+    const handleIntensityChange = (event) => {
+        setMoodIntensity(event.target.value);
     };
 
     return (
@@ -19,13 +22,26 @@ function MoodSelection() {
             <h2>Select Your Mood</h2>
             <div className="moods-container">
                 {moods.map(mood => (
-                    <button 
-                        key={mood}
-                        className={selectedMood === mood ? 'selected' : ''}
-                        onClick={() => handleMoodSelect(mood)}
-                    >
-                        {mood}
-                    </button>
+                    <div key={mood}>
+                        <button 
+                            className={selectedMood === mood ? 'selected' : ''}
+                            onClick={() => handleMoodSelect(mood)}
+                        >
+                            {mood}
+                        </button>
+                        {selectedMood === mood && (
+                            <div>
+                                <label>{`Intensity of ${mood}: ${moodIntensity}%`}</label>
+                                <input 
+                                    type="range" 
+                                    min="0" 
+                                    max="100" 
+                                    value={moodIntensity} 
+                                    onChange={handleIntensityChange} 
+                                />
+                            </div>
+                        )}
+                    </div>
                 ))}
             </div>
         </div>
