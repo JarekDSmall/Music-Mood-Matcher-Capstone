@@ -1,10 +1,23 @@
-import React, { useState } from 'react';
-import { fetchTopTracks, searchTracks, createPlaylist } from '../utility/spotifyAPI'; // Adjust the path accordingly
+import React, { useState, useEffect } from 'react';
+import { searchTracks, createPlaylist, fetchUserProfile, fetchRecommendations } from '../utility/spotifyAPI';
 
 function MoodPlaylistCreator() {
-    const [mood, setMood] = useState(''); // State for mood selection
-    const [moodIntensity, setMoodIntensity] = useState(50); // State for mood intensity
-    const [tracks, setTracks] = useState([]); // State to store fetched tracks
+    const [mood, setMood] = useState('');
+    const [moodIntensity, setMoodIntensity] = useState(50);
+    const [tracks, setTracks] = useState([]);
+    const [userId, setUserId] = useState(null);
+
+    useEffect(() => {
+        const fetchUserId = async () => {
+            try {
+                const userProfile = await fetchUserProfile();
+                setUserId(userProfile.id);
+            } catch (error) {
+                console.error("Error fetching user profile:", error);
+            }
+        };
+        fetchUserId();
+    }, []);
 
     const handleMoodChange = (event) => {
         setMood(event.target.value);
@@ -16,25 +29,25 @@ function MoodPlaylistCreator() {
 
     const fetchTracks = async () => {
         try {
-            // Fetch user's top tracks
-            const topTracks = await fetchTopTracks();
+            // Search tracks based on mood to get seed tracks
+            const seedTracks = await searchTracks(mood);
+            const seedTrackIds = seedTracks.slice(0, 5).map(track => track.id); // Use the first 5 tracks as seeds
 
-            // Search tracks based on mood
-            const moodTracks = await searchTracks(mood);
+            // Fetch recommendations based on seed tracks
+            const recommendedTracks = await fetchRecommendations(seedTrackIds);
 
-            // Combine the tracks (this is just an example, you can have your own logic)
-            const combinedTracks = [...topTracks, ...moodTracks];
-
-            setTracks(combinedTracks);
+            setTracks(recommendedTracks);
         } catch (error) {
             console.error("Error fetching tracks:", error);
         }
     };
 
     const handleSubmit = async () => {
+        if (!userId) {
+            console.error("User ID not available.");
+            return;
+        }
         try {
-            // Logic to create the playlist based on the mood and moodIntensity
-            const userId = 'YOUR_USER_ID'; // You should fetch the user's ID dynamically
             const playlist = await createPlaylist(userId, `Mood Playlist - ${mood}`, `A playlist based on ${mood} mood with ${moodIntensity}% intensity.`);
             console.log("Playlist created successfully:", playlist);
         } catch (error) {
@@ -54,7 +67,11 @@ function MoodPlaylistCreator() {
                         <option value="Sad">Sad</option>
                         <option value="Energetic">Energetic</option>
                         <option value="Calm">Calm</option>
-                        {/* Add more moods as needed */}
+                        <option value="Relaxed">Relaxed</option>
+                        <option value="Motivated">Motivated</option>
+                        <option value="Angry">Angry</option>
+                        <option value="Romantic">Romantic</option>
+                        <option value="Melancholic">Melancholic</option>
                     </select>
                     {mood && (
                         <div>
