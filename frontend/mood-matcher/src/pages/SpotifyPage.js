@@ -28,6 +28,8 @@ function SpotifyPage() {
         }
     }, []);
 
+    const navigate = useNavigate()
+
     const fetchUserProfile = async (token) => {
         console.log("Fetching user profile");
         try {
@@ -135,9 +137,8 @@ const fetchPlaylists = async (token) => {
     const handleSpotifyLogout = () => {
         localStorage.removeItem('spotifyAccessToken');
         setIsAuthenticated(false);
+        navigate('/');  // Navigate back to the home page
     };
-
-    const navigate = useNavigate() // Use the useHistory hook for navigation
 
     const navigateToMoodPlaylistCreator = () => {
         navigate('/mood-playlist-creator');

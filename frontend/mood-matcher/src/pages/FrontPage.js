@@ -40,7 +40,18 @@ class HomePage extends React.Component {
                     <p>
                         Discover music that matches your mood. Log in with Spotify to get started.
                     </p>
-                    {/* You can add more components or content here */}
+                    <h3>What is Music Mood Matcher?</h3>
+                    <p>
+                        Music Mood Matcher is a unique tool that curates playlists based on your current mood. Whether you're feeling happy, sad, energetic, or relaxed, we've got the perfect tracks to accompany your emotions.
+                    </p>
+                    <h3>How to use:</h3>
+                    <ol>
+                        <li>Login with your Spotify account.</li>
+                        <li>Select your current mood from the provided options.</li>
+                        <li>Adjust the intensity of your mood using the slider.</li>
+                        <li>Hit "Fetch Tracks" to get a list of songs that match your mood.</li>
+                        <li>Create a playlist with the fetched tracks and enjoy!</li>
+                    </ol>
                 </main>
                 <footer>
                     <p>Music Mood Matcher &copy; 2023</p>
@@ -49,6 +60,7 @@ class HomePage extends React.Component {
         );
     }
 }
+
 
 function FrontPage() {
     return (

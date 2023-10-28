@@ -5,9 +5,9 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/layout/Navbar';
 
 // User Components
-import Login from './components/user/Login';
-import Register from './components/user/Register';
-import Profile from './components/user/Profile';
+// import Login from './components/user/Login';
+// import Register from './components/user/Register';
+// import Profile from './components/user/Profile';
 
 // Playlist Components
 import Playlist from './components/playlist/PlaylistList'; 
@@ -24,6 +24,7 @@ import SpotifyPage from './pages/SpotifyPage';  // New import
 import FrontPage from './pages/FrontPage';
 import Recommendations from './pages/Recommendations';
 import MoodPlaylistCreator from './pages/MoodPlaylistCreator';
+import SuccessPage from './pages/SuccessPage';
 
 // Context
 import { AuthProvider } from './context/authContext';
@@ -42,9 +43,9 @@ function App() {
             <Navbar />
             <Routes>
               <Route path="/" element={<FrontPage />} />
-              <Route path="/login" element={<Login />} />
+              {/* <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
-              <Route path="/profile" element={<PrivateRouteWrapper><Profile /></PrivateRouteWrapper>} />
+              <Route path="/profile" element={<PrivateRouteWrapper><Profile /></PrivateRouteWrapper>} /> */}
               <Route path="/playlist" element={<PrivateRouteWrapper><Playlist /></PrivateRouteWrapper>} />
               
               {/* Direct Routes for Playlist Creation */}
@@ -58,6 +59,7 @@ function App() {
               <Route path="/spotify/process-token" element={<SpotifyRedirect />} />
               <Route path="/recommendations" element={<PrivateRouteWrapper><Recommendations /></PrivateRouteWrapper>} />
               <Route path="/mood-playlist-creator" element={<MoodPlaylistCreator />} />
+              <Route path="/success" element={<SuccessPage />} />
               {/* <Route path="/process-token" element={<ProcessToken />} /> */}
               {/* <Route path="*" element={<NotFoundPage />} /> */}
             </Routes>

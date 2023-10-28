@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { searchTracks, createPlaylist, fetchUserProfile, fetchRecommendations, addTracksToPlaylist } from '../utility/spotifyAPI';
+import { useNavigate } from 'react-router-dom';
 
 
 function MoodPlaylistCreator() {
@@ -43,21 +44,29 @@ function MoodPlaylistCreator() {
         }
     };
 
-    const handleSubmit = async () => {
+    const navigate = useNavigate();
+
+    const handleSubmit = async (event) => {
+        
+        event.preventDefault();
+
         if (!userId) {
             console.error("User ID not available.");
             return;
         }
         try {
-            const playlist = await createPlaylist(userId, `Mood Playlist - ${mood}`, `A playlist based on ${mood} mood with ${moodIntensity}% intensity.`);
+            // Update the description to include the mood intensity
+            const description = `A playlist based on ${mood} mood with an intensity of ${moodIntensity}%.`;
+            const playlist = await createPlaylist(userId, `Mood Playlist - ${mood}`, description);
+            
             if (playlist && playlist.id) {
                 // Add tracks to the created playlist
                 const trackUris = tracks.map(track => track.uri);
                 const success = await addTracksToPlaylist(playlist.id, trackUris);
                 if (success) {
                     console.log("Tracks added to the playlist successfully.");
-                    // Provide a link to the created playlist
-                    window.alert(`Playlist created successfully! You can view it here: https://open.spotify.com/playlist/${playlist.id}`);
+                    // Redirect to the new page with the success message
+                    navigate('/success', { state: { playlistId: playlist.id } });
                 } else {
                     console.error("Error adding tracks to the playlist.");
                 }
@@ -68,6 +77,7 @@ function MoodPlaylistCreator() {
             console.error("Error in handleSubmit:", error);
         }
     };
+    
     
 
     return (
@@ -87,6 +97,17 @@ function MoodPlaylistCreator() {
                         <option value="Angry">Angry</option>
                         <option value="Romantic">Romantic</option>
                         <option value="Melancholic">Melancholic</option>
+                        <option value="Chill">Chill</option>
+                        <option value="Uplifting">Uplifting</option>
+                        <option value="Hopeful">Hopeful</option>
+                        <option value="Mellow">Mellow</option>
+                        <option value="Intense">Intense</option>
+                        <option value="Groovy">Groovy</option>
+                        <option value="Dreamy">Dreamy</option>
+                        <option value="Nostalgic">Nostalgic</option>
+                        <option value="Excited">Excited</option>
+                        <option value="Pensive">Pensive</option>
+                        <option value="Empowered">Empowered</option>
                     </select>
                     {mood && (
                         <div>
