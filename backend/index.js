@@ -17,7 +17,6 @@ require('./models/playlist');
 require('./models/user');
 
 // Import the routes
-// const userRoutes = require('./routes/users');
 const playlistRoutes = require('./routes/playlists');
 const spotifyRoutes = require('./routes/spotify');
 const moodsRoutes = require('./routes/moods');
@@ -25,17 +24,22 @@ const moodRoutes = require('./routes/mood');
 const genresRoutes = require('./routes/genres');
 
 const app = express();
+
 // Add morgan middleware for logging
 app.use(morgan('combined'));
 let server;
-
-
 
 // Middleware setup
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(cookieParser());
+
+// If in test environment, use the bypass middleware
+const bypassSpotifyAuthForTesting = require('./middleware/testing'); 
+if (process.env.NODE_ENV === 'test') {
+    app.use(bypassSpotifyAuthForTesting);
+}
 
 // Setup express-session with connect-mongo
 app.use(session({
