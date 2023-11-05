@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import '../../styles/Login.css';
 
 function Login() {
     const [spotifyAuthUrl, setSpotifyAuthUrl] = useState('');

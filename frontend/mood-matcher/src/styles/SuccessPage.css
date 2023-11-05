@@ -1,0 +1,57 @@
+.success-page-container {
+    background-color: #D5F5E3; /* Light green for a success feel */
+    color: #1D8348; /* Dark green for text, symbolizing success */
+    padding: 20px;
+    text-align: center;
+    min-height: 100vh; /* Full height */
+}
+
+.success-page-header {
+    margin-bottom: 20px;
+}
+
+.success-page-link {
+    color: #3498DB; /* Blue for links */
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.success-page-link:hover {
+    text-decoration: underline;
+}
+
+.success-page-button {
+    background-color: #27AE60; /* Green for buttons */
+    color: #FFFFFF; /* White for button text */
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.success-page-button:hover {
+    background-color: #145A32; /* Darker green for hover state */
+    transform: scale(1.05); /* Slightly enlarge the button on hover */
+}
+
+/* Add a box-shadow to the container for a subtle depth effect */
+.success-page-container {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Style the link back to the dashboard to look like a button */
+.back-to-dashboard-link {
+    display: inline-block;
+    background-color: #3498DB; /* Blue to match the link color */
+    color: #FFFFFF; /* White for text */
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.back-to-dashboard-link:hover {
+    background-color: #21618C; /* Darker blue for hover state */
+    transform: translateY(-2px); /* Slight lift effect */
+}

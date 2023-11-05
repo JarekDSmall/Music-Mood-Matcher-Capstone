@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom'; // Import useHistory for navigation
+import '../styles/SpotifyPage.css'
 
 function SpotifyPage() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -12,7 +13,7 @@ function SpotifyPage() {
     });
     const [userTopTracks, setUserTopTracks] = useState([]);
     const [playlists, setPlaylists] = useState([]);
-    const [timeRange, setTimeRange] = useState('short_term');
+   
 
     useEffect(() => {
         console.log("SpotifyPage useEffect triggered");
@@ -145,31 +146,37 @@ const fetchPlaylists = async (token) => {
     };
 
     return (
-        <div>
-            <h1>Welcome, {userProfile.displayName}!</h1>
-            {userProfile.profilePicture && <img src={userProfile.profilePicture} alt="Profile" />}
+        <div className="spotify-container">
+            <h1 className="spotify-header">Welcome, {userProfile.displayName}!</h1>
+            {userProfile.profilePicture && (
+                <img
+                    src={userProfile.profilePicture}
+                    alt="Profile"
+                    className="spotify-profile-picture"
+                />
+            )}
             <p>Country: {userProfile.country}</p>
             <p>Followers: {userProfile.followersCount}</p>
             {!isAuthenticated ? (
-                <button onClick={initiateSpotifyLogin}>Login with Spotify</button>
+                <button onClick={initiateSpotifyLogin} className="spotify-button">Login with Spotify</button>
             ) : (
                 <div>
                     <h2>Your Top Tracks</h2>
-                    <ul>
+                    <ul className="spotify-list">
                         {userTopTracks.map(track => (
-                            <li key={track.id}>
+                            <li key={track.id} className="spotify-list-item">
                                 {track.name} by {track.artists[0].name}
                             </li>
                         ))}
                     </ul>
                     <h2>Your Playlists</h2>
-                    <ul>
+                    <ul className="spotify-list">
                         {playlists.map(playlist => (
-                            <li key={playlist.id}>{playlist.name}</li>
+                            <li key={playlist.id} className="spotify-list-item">{playlist.name}</li>
                         ))}
                     </ul>
-                    <button onClick={navigateToMoodPlaylistCreator}>Create a Mood Playlist</button> {/* Added button */}
-                    <button onClick={handleSpotifyLogout}>Logout from Spotify</button>
+                    <button onClick={navigateToMoodPlaylistCreator} className="spotify-button">Create a Mood Playlist</button>
+                    <button onClick={handleSpotifyLogout} className="spotify-button logout-button">Logout from Spotify</button>
                 </div>
             )}
         </div>

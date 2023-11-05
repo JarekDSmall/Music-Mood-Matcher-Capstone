@@ -2,10 +2,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
 
 .navbar {
-    background-color: #FFA500; /* Orange */
+    background-color: #FFDB58; /* Mustard */
     padding: 1rem 2rem;
     font-family: 'Erica One', cursive;
-    border-bottom: 5px solid #DAA520; /* Goldenrod */
+    border-bottom: 5px solid #996515; /* Bronze */
 }
 
 .navbar-container {
@@ -15,10 +15,10 @@
 }
 
 .navbar-logo {
-    color: #8B4513; /* SaddleBrown */
+    color: #FFFDD0; /* Cream */
     text-decoration: none;
     font-size: 2rem;
-    border: 2px solid #8B4513;
+    border: 2px solid #FFFDD0; /* Cream */
     padding: 0.2rem 0.5rem;
     border-radius: 5px;
 }
@@ -30,7 +30,7 @@
 }
 
 .navbar-menu li a {
-    color: #8B4513; /* SaddleBrown */
+    color: #FFFDD0; /* Cream */
     text-decoration: none;
     padding: 0.5rem 1rem;
     border-radius: 5px;
@@ -40,13 +40,13 @@
 }
 
 .navbar-menu li a:hover {
-    background-color: #DAA520; /* Goldenrod */
-    color: #FFA500; /* Orange */
-    border: 2px solid #8B4513;
+    background-color: #CC5500; /* Burnt Orange */
+    color: #FFFDD0; /* Cream */
+    border: 2px solid #996515; /* Bronze */
 }
 
 .active a {
-    background-color: #DAA520; /* Goldenrod */
-    color: #FFA500; /* Orange */
-    border: 2px solid #8B4513;
+    background-color: #CC5500; /* Burnt Orange */
+    color: #FFFDD0; /* Cream */
+    border: 2px solid #996515; /* Bronze */
 }

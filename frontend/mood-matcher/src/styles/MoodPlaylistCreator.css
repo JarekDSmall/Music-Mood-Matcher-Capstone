@@ -1,0 +1,53 @@
+.mood-playlist-creator-container {
+    background-color: #FFD700; /* Gold for a vibrant feel */
+    color: #2F4F4F; /* Dark Slate Gray for text */
+    padding: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.mood-playlist-creator-form {
+    margin-bottom: 20px;
+    transition: margin-bottom 0.3s ease;
+}
+
+.mood-playlist-creator-form label,
+.mood-playlist-creator-form select,
+.mood-playlist-creator-form input[type="range"] {
+    margin-right: 10px;
+    transition: margin-right 0.3s ease;
+}
+
+.mood-playlist-creator-form button {
+    background-color: #DE3163; /* Cerise */
+    color: #FFFFFF; /* White */
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.mood-playlist-creator-form button:hover {
+    background-color: #C21807; /* Dark red */
+    transform: scale(1.05); /* Slightly enlarge the button on hover */
+}
+
+.mood-playlist-creator-tracks-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.mood-playlist-creator-tracks-list li {
+    background-color: #FF7F50; /* Coral */
+    color: #FFFFFF; /* White */
+    padding: 10px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.mood-playlist-creator-tracks-list li:hover {
+    background-color: #FF6347; /* Tomato */
+    transform: translateY(-3px); /* Slightly raise the item */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Shadow for a "lifted" effect */
+}

@@ -1,21 +1,24 @@
 .login-container {
-    background-color: #F8c560; 
-    font-family: 'Erica One', sans-serif;
+    background-color: #A67B5B; /* French Beige */
     padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0px 0px 15px #be4f2a; 
+    text-align: center;
+    transition: background-color 0.3s ease; /* Transition for background color */
 }
 
-.login-button {
-    background-color: #8dc9a1; 
-    color: #FFFFFF;
+.spotify-login-button {
+    background-color: #1DB954; /* Spotify Brand Green */
+    color: #FFFFFF; /* White for text */
     padding: 10px 20px;
-    border: none;
+    text-decoration: none;
     border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
+    display: inline-block;
+    transition: background-color 0.3s ease; /* Transition for background color */
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,0.2); /* Shadow for depth */
+    text-transform: uppercase; /* Uppercase text for a button-like appearance */
+    font-weight: bold; /* Bold font for emphasis */
 }
 
-.login-button:hover {
-    background-color: #be4f2a; 
+.spotify-login-button:hover {
+    background-color: #1ED760; /* Lighter green for hover */
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); /* Larger shadow on hover for a "lifted" effect */
 }

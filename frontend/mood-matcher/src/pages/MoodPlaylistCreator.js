@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { searchTracks, createPlaylist, fetchUserProfile, fetchRecommendations, addTracksToPlaylist } from '../utility/spotifyAPI';
 import { useNavigate } from 'react-router-dom';
-
+import '../styles/MoodPlaylistCreator.css';
 
 function MoodPlaylistCreator() {
     const [mood, setMood] = useState('');
@@ -81,12 +81,16 @@ function MoodPlaylistCreator() {
     
 
     return (
-        <div>
-            <h2>Create a Mood Playlist</h2>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Select Mood:</label>
-                    <select value={mood} onChange={handleMoodChange}>
+        <div className="mood-playlist-creator-container">
+            <h2 className="mood-playlist-creator-title">Create a Mood Playlist</h2>
+            <form onSubmit={handleSubmit} className="mood-playlist-creator-form">
+                <div className="mood-selection-container">
+                    <label className="mood-selection-label">Select Mood:</label>
+                    <select 
+                        value={mood} 
+                        onChange={handleMoodChange} 
+                        className="mood-selection-select"
+                    >
                         <option value="">--Select Mood--</option>
                         <option value="Happy">Happy</option>
                         <option value="Sad">Sad</option>
@@ -108,29 +112,30 @@ function MoodPlaylistCreator() {
                         <option value="Excited">Excited</option>
                         <option value="Pensive">Pensive</option>
                         <option value="Empowered">Empowered</option>
-                    </select>
+                        </select>
                     {mood && (
-                        <div>
-                            <label>{`Intensity of ${mood}: ${moodIntensity}%`}</label>
+                        <div className="mood-intensity-container">
+                            <label className="mood-intensity-label">{`Intensity of ${mood}: ${moodIntensity}%`}</label>
                             <input 
                                 type="range" 
                                 min="0" 
                                 max="100" 
                                 value={moodIntensity} 
                                 onChange={handleIntensityChange} 
+                                className="mood-intensity-range"
                             />
                         </div>
                     )}
-                </div>
-                <button type="button" onClick={fetchTracks}>Fetch Tracks</button>
-                <div>
-                    <ul>
+            </div>
+                <button type="button" onClick={fetchTracks} className="fetch-tracks-button">Fetch Tracks</button>
+                <div className="track-list-container">
+                    <ul className="mood-playlist-creator-tracks-list">
                         {tracks.map(track => (
-                            <li key={track.id}>{track.name}</li>
+                            <li key={track.id} className="mood-playlist-creator-track-list-item">{track.name}</li>
                         ))}
                     </ul>
                 </div>
-                <button type="submit">Create Playlist</button>
+                <button type="submit" className="create-playlist-button">Create Playlist</button>
             </form>
         </div>
     );

@@ -5,6 +5,8 @@ import MoodPlaylistCreator from './MoodPlaylistCreator';
 import SpotifyPage from './SpotifyPage';
 import SuccessPage from './SuccessPage';
 
+
+
 describe('FrontPage Component', () => {
     it('renders the main landing page', () => {
         render(

@@ -1,0 +1,86 @@
+/* SpotifyPage.css */
+.spotify-container {
+    background-color: #F2D7D5; /* Light Pink for a soft background */
+    color: #6B8E23; /* Olive Drab for text */
+    padding: 20px;
+    min-height: 100vh; /* Full height */
+}
+
+.spotify-header {
+    color: #FF7F50; /* Coral for headers */
+    margin-bottom: 20px;
+}
+
+.spotify-profile-picture {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+    transition: transform 0.3s ease;
+}
+
+.spotify-profile-picture:hover {
+    transform: scale(1.1);
+}
+
+.spotify-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.spotify-list-item {
+    background-color: #FFD700; /* Gold for list items */
+    color: #2F4F4F; /* Dark Slate Gray for list item text */
+    padding: 10px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.spotify-list-item:hover {
+    background-color: #f0f0f0; /* Light grey for hover */
+}
+
+.spotify-button {
+    background-color: #DE3163; /* Cerise for buttons */
+    color: #FFFFFF; /* White for button text */
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 10px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.spotify-button:hover {
+    background-color: #C21807; /* Dark red for hover state */
+    transform: scale(1.05);
+}
+
+/* Additional styles for logout button */
+.logout-button {
+    background-color: #e63946; /* Red for logout button */
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+.logout-button:hover {
+    background-color: #d62828; /* Darker red for hover */
+}
+
+/* Smooth scrolling for the entire page */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Fade in for list items */
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
+.spotify-list-item {
+    opacity: 0;
+    animation: fadeIn 1s ease forwards;
+}

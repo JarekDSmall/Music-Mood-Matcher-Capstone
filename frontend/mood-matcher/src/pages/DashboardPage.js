@@ -1,19 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-
 import jwtDecode from 'jwt-decode';
 
 const DashboardPage = () => {
     const token = localStorage.getItem('jwtToken');
     const decodedToken = jwtDecode(token);
-    
-    const userId = decodedToken.userId; // Extract userId from the decoded token
+    const userId = decodedToken.userId;
 
     const [topTracks, setTopTracks] = useState([]);
     const [playlists, setPlaylists] = useState([]);
     const [isSpotifyConnected, setIsSpotifyConnected] = useState(false);
-    const [spotifyAccessToken, setSpotifyAccessToken] = useState(null); // Store the Spotify access token
-    const [newPlaylistName, setNewPlaylistName] = useState(''); // State to store the new playlist name
+    const [spotifyAccessToken, setSpotifyAccessToken] = useState(null);
+    const [newPlaylistName, setNewPlaylistName] = useState('');
 
     useEffect(() => {
         const spotifyToken = localStorage.getItem('spotifyAuthToken');
@@ -55,7 +53,7 @@ const DashboardPage = () => {
         try {
             const response = await axios.post('/spotify/create-playlist', {
                 name: newPlaylistName,
-                userId: userId  // Send userId in the request body
+                userId: userId
             }, {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -67,13 +65,12 @@ const DashboardPage = () => {
             console.error("Error creating playlist:", error);
         }
     };
-    
 
     const handleContinueWithoutSpotify = async () => {
         try {
-            const response = await axios.get("http://localhost:5000/spotify/spotify-token"); // Backend route for Client Credentials Flow
+            const response = await axios.get("http://localhost:5000/spotify/spotify-token");
             const token = response.data.access_token;
-            localStorage.setItem('spotifyAuthToken', token); // Store the token in local storage
+            localStorage.setItem('spotifyAuthToken', token);
             setSpotifyAccessToken(token);
             setIsSpotifyConnected(true);
         } catch (error) {
@@ -82,23 +79,27 @@ const DashboardPage = () => {
     };
 
     return (
-        <div>
-            <h1>Welcome to the Dashboard, {decodedToken.name}!</h1>
+        <div style={{ backgroundColor: '#F2D7D5', color: '#6B8E23', padding: '20px', minHeight: '100vh' }}>
+            <h1 style={{ color: '#FF7F50', marginBottom: '20px' }}>Welcome to the Dashboard, {decodedToken.name}!</h1>
             <p>Email: {decodedToken.email}</p>
             
             {isSpotifyConnected ? (
                 <>
-                    <h2>Your Top Tracks</h2>
-                    <ul>
+                    <h2 style={{ /* Your h2 styles here */ }}>Your Top Tracks</h2>
+                    <ul style={{ listStyleType: 'none', padding: '0' }}>
                         {topTracks.map(track => (
-                            <li key={track.id}>{track.name} by {track.artists[0].name}</li>
+                            <li key={track.id} style={{ backgroundColor: '#FFD700', color: '#2F4F4F', padding: '10px', marginBottom: '5px', borderRadius: '5px' }}>
+                                {track.name} by {track.artists[0].name}
+                            </li>
                         ))}
                     </ul>
 
-                    <h2>Your Playlists</h2>
-                    <ul>
+                    <h2 style={{ /* Your h2 styles here */ }}>Your Playlists</h2>
+                    <ul style={{ listStyleType: 'none', padding: '0' }}>
                         {playlists.map(playlist => (
-                            <li key={playlist.id}>{playlist.name}</li>
+                            <li key={playlist.id} style={{ backgroundColor: '#FFD700', color: '#2F4F4F', padding: '10px', marginBottom: '5px', borderRadius: '5px' }}>
+                                {playlist.name}
+                            </li>
                         ))}
                     </ul>
                     <div>
@@ -107,15 +108,31 @@ const DashboardPage = () => {
                             placeholder="Enter new playlist name" 
                             value={newPlaylistName}
                             onChange={e => setNewPlaylistName(e.target.value)}
+                            style={{ padding: '10px', marginBottom: '10px', border: '2px solid #FF7F50', borderRadius: '5px' }}
                         />
-                        <button onClick={handleCreatePlaylist}>Create Playlist</button>
+                        <button 
+                            onClick={handleCreatePlaylist} 
+                            style={{ backgroundColor: '#DE3163', color: '#FFFFFF', padding: '10px 20px', border: 'none', borderRadius: '5px', cursor: 'pointer', marginRight: '10px' }}
+                        >
+                            Create Playlist
+                        </button>
                     </div>
                 </>
             ) : (
                 <div>
                     <p>You haven't connected your Spotify account yet. Connect now to see your top tracks and playlists!</p>
-                    <button onClick={() => window.location.href = '/spotify-auth'}>Connect with Spotify</button>
-                    <button onClick={handleContinueWithoutSpotify}>Continue without Spotify</button>
+                    <button 
+                        onClick={() => window.location.href = '/spotify-auth'} 
+                        style={{ backgroundColor: '#DE3163', color: '#FFFFFF', padding: '10px 20px', border: 'none', borderRadius: '5px', cursor: 'pointer', marginRight: '10px' }}
+                    >
+                        Connect with Spotify
+                    </button>
+                    <button 
+                        onClick={handleContinueWithoutSpotify} 
+                        style={{ backgroundColor: '#DE3163', color: '#FFFFFF', padding: '10px 20px', border: 'none', borderRadius: '5px', cursor: 'pointer', marginRight: '10px' }}
+                    >
+                        Continue without Spotify
+                    </button>
                 </div>
             )}
         </div>

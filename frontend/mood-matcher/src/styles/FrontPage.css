@@ -1,0 +1,15 @@
+.home-page {
+    background-color: #FFDB58; /* Mustard for a warm feel */
+    color: #6B8E23; /* Olive Drab for text */
+    padding: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.home-page header,
+.home-page main,
+.home-page footer {
+    margin-bottom: 20px;
+    transition: margin-bottom 0.3s ease;
+}
+
+/* Add any additional styles or hover effects you want for elements within .home-page */
