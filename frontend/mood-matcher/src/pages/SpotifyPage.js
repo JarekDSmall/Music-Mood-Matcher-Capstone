@@ -176,7 +176,7 @@ const fetchPlaylists = async (token) => {
                         ))}
                     </ul>
                     <button onClick={navigateToMoodPlaylistCreator} className="spotify-button">Create a Mood Playlist</button>
-                    <button onClick={handleSpotifyLogout} className="spotify-button logout-button">Logout from Spotify</button>
+                    {/* <button onClick={handleSpotifyLogout} className="spotify-button logout-button">Logout from Spotify</button> */}
                 </div>
             )}
         </div>

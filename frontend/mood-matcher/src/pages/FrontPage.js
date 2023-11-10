@@ -51,8 +51,10 @@ class HomePage extends React.Component {
                         <li>Login with your Spotify account.</li>
                         <li>Select your current mood from the provided options.</li>
                         <li>Adjust the intensity of your mood using the slider.</li>
-                        <li>Hit "Fetch Tracks" to get a list of songs that match your mood.</li>
-                        <li>Create a playlist with the fetched tracks and enjoy!</li>
+                        <li>Hit "Fetch Tracks" to get the list of songs that match your mood choice.</li>
+                        <li>Click "Create Playlist"</li>
+                        <li>The tracks will be curated in to a playlist called Mood Playlist depending on your mood! </li>
+                        <li>Once created you can click the link to open the playlit on Spotify!</li>
                     </ol>
                 </main>
                 <footer className="home-footer">
