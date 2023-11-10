@@ -5,8 +5,6 @@ const mongoose = require('mongoose');
 const axios = require('axios');
 const router = express.Router();
 
-// Middleware to handle Spotify authentication
-router.use(authenticateSpotify);
 
 // Create a new playlist on Spotify
 router.post('/create', authenticateSpotify, async (req, res) => {

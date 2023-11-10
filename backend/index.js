@@ -105,7 +105,7 @@ app.get('/spotify/redirect', (req, res) => {
 // app.use('/users', userRoutes);
 app.use('/playlists', playlistRoutes);
 app.use('/spotify', spotifyRoutes);
-app.use('/moods', moodsRoutes);
+// app.use('/moods', moodsRoutes);
 app.use('/api/mood', moodRoutes);
 app.use('/genres', genresRoutes);
 
@@ -117,4 +117,4 @@ if (process.env.NODE_ENV !== 'test') {
   });
 }
 
-module.exports = { app, server };
+module.exports = { app, server, connectToDatabase };

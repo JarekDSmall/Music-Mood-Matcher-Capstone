@@ -2,36 +2,36 @@ const express = require('express');
 const axios = require('axios');
 const router = express.Router();
 
-router.get('/mood/:trackId', async (req, res) => {
-    const trackId = req.params.trackId;
-    const accessToken = req.user.spotifyAccessToken; // Assuming you have user's Spotify access token stored in req.user
+// router.get('/mood/:trackId', async (req, res) => {
+//     const trackId = req.params.trackId;
+//     const accessToken = req.user.spotifyAccessToken; // Assuming you have user's Spotify access token stored in req.user
 
-    try {
-        const response = await axios.get(`https://api.spotify.com/v1/audio-features/${trackId}`, {
-            headers: {
-                'Authorization': `Bearer ${accessToken}`
-            }
-        });
+//     try {
+//         const response = await axios.get(`https://api.spotify.com/v1/audio-features/${trackId}`, {
+//             headers: {
+//                 'Authorization': `Bearer ${accessToken}`
+//             }
+//         });
 
-        const features = response.data;
-        const mood = determineMood(features);
+//         const features = response.data;
+//         const mood = determineMood(features);
 
-        res.json({ mood });
+//         res.json({ mood });
 
-    } catch (error) {
-        console.error('Error fetching track features:', error);
-        res.status(500).json({ message: 'Failed to fetch track features from Spotify.' });
-    }
-});
+//     } catch (error) {
+//         console.error('Error fetching track features:', error);
+//         res.status(500).json({ message: 'Failed to fetch track features from Spotify.' });
+//     }
+// });
 
-function determineMood(features) {
-    if (features.valence > 0.7) {
-        return 'Happy';
-    } else if (features.valence < 0.3) {
-        return 'Sad';
-    }
-    return 'Neutral';
-}
+// function determineMood(features) {
+//     if (features.valence > 0.7) {
+//         return 'Happy';
+//     } else if (features.valence < 0.3) {
+//         return 'Sad';
+//     }
+//     return 'Neutral';
+// }
 
 router.get('/recommendations', async (req, res) => {
     const mood = req.query.mood;
