@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useAuth } from '../context/authContext';
 import axios from 'axios';
 import '../styles/FrontPage.css';
 import '../styles/Login.css';
@@ -66,10 +67,12 @@ class HomePage extends React.Component {
 }
 
 function FrontPage() {
+    const { isAuthenticated } = useAuth(); // Use the useAuth hook
+
     return (
         <div className="front-page-container">
             <HomePage />
-            <Login />
+            {!isAuthenticated && <Login />} {/* Render Login only if not authenticated */}
         </div>
     );
 }

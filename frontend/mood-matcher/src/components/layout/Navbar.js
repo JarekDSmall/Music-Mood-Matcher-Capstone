@@ -5,11 +5,11 @@ import '../../styles/Navbar.css';
 
 const Navbar = () => {
     const navigate = useNavigate();
-    const { isAuthenticated, logout } = useAuth();
+    const { isAuthenticated, logoutFromSpotify } = useAuth(); // Ensure you're using the correct logout function name
 
     const handleLogout = async () => {
         try {
-            await logout();
+            await logoutFromSpotify(); // Use the correct logout function
             navigate('/'); // Redirect to home page after successful logout
         } catch (error) {
             console.error("Failed to log out:", error);
@@ -24,16 +24,15 @@ const Navbar = () => {
                 </Link>
                 <div className="navbar-links">
                     {isAuthenticated ? (
-                        // Links for authenticated users
                         <>
-                            <Link to="/">Home</Link>
-                            <Link to="/mood-playlist-creator">Playlist Creator</Link>
-                            <Link to="/spotify">Dashboard</Link>
-                            {/* <button onClick={handleLogout}>Logout</button> */}
+                            <div><Link to="/">Home</Link></div>
+                            <div><Link to="/mood-playlist-creator">Playlist Creator</Link></div>
+                            <div><Link to="/spotify">Dashboard</Link></div>
+                            <div><button onClick={handleLogout}>Logout</button></div> 
                         </>
                     ) : (
-                        // Prompt for unauthenticated users
-                        <Link to="/spotify-login">Login through Spotify</Link>
+                        // No content for unauthenticated users
+                        null
                     )}
                 </div>
             </div>

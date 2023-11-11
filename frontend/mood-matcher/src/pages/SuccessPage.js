@@ -1,16 +1,20 @@
 import React from 'react';
-import { useLocation, Link, useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
+import { useLocation, Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/authContext'; // Adjust the path as necessary
 import '../styles/SuccessPage.css';
-
 
 function SuccessPage() {
     const location = useLocation();
-    const navigate = useNavigate(); // Use the useNavigate hook for navigation
+    const navigate = useNavigate();
+    const { logoutFromSpotify } = useAuth(); // Use logoutFromSpotify from your AuthContext
     const playlistId = location.state.playlistId;
 
-    const handleSpotifyLogout = () => {
-        localStorage.removeItem('spotifyAccessToken'); // Remove the Spotify access token from local storage
-        navigate('/');  // Navigate back to the home page
+    const handleFullLogout = async () => {
+        try {
+            logoutFromSpotify(); // Use logoutFromSpotify to log out
+        } catch (error) {
+            console.error("Failed to log out:", error);
+        }
     };
 
     return (
@@ -18,10 +22,9 @@ function SuccessPage() {
             <h2 className="success-page-header">Playlist created successfully!</h2>
             <p>You can view it here: <a href={`https://open.spotify.com/playlist/${playlistId}`} target="_blank" rel="noopener noreferrer" className="success-page-link">Open Playlist</a></p>
             <p><Link to="/spotify" className="back-to-dashboard-link">Back to Dashboard</Link></p>
-            <button onClick={handleSpotifyLogout} className="success-page-button">Logout from Spotify</button>
+            <button onClick={handleFullLogout} className="success-page-button">Logout from Spotify</button>
         </div>
     );
-    
 }
 
 export default SuccessPage;

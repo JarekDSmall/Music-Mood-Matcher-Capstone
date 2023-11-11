@@ -1,0 +1,289 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FrontPage Component matches snapshot 1`] = `
+<div
+  className="front-page-container"
+>
+  <div
+    className="home-page"
+  >
+    <header
+      className="home-header"
+    >
+      <h1>
+        Welcome to Music Mood Matcher!
+      </h1>
+    </header>
+    <main
+      className="home-main"
+    >
+      <p>
+        Discover music that matches your mood. Log in with Spotify to get started.
+      </p>
+      <h3>
+        What is Music Mood Matcher?
+      </h3>
+      <p>
+        Music Mood Matcher is a unique tool that curates playlists based on your current mood. Whether you're feeling happy, sad, energetic, or relaxed, we've got the perfect tracks to accompany your emotions.
+      </p>
+      <h3>
+        How to use:
+      </h3>
+      <ol
+        className="home-instructions"
+      >
+        <li>
+          Login with your Spotify account.
+        </li>
+        <li>
+          Select your current mood from the provided options.
+        </li>
+        <li>
+          Adjust the intensity of your mood using the slider.
+        </li>
+        <li>
+          Hit "Fetch Tracks" to get the list of songs that match your mood choice.
+        </li>
+        <li>
+          Click "Create Playlist"
+        </li>
+        <li>
+          The tracks will be curated in to a playlist called Mood Playlist depending on your mood! 
+        </li>
+        <li>
+          Once created you can click the link to open the playlit on Spotify!
+        </li>
+      </ol>
+    </main>
+    <footer
+      className="home-footer"
+    >
+      <p>
+        Music Mood Matcher © 2023
+      </p>
+    </footer>
+  </div>
+   
+</div>
+`;
+
+exports[`MoodPlaylistCreator Component matches snapshot 1`] = `
+<div
+  className="mood-playlist-creator-container"
+>
+  <h2
+    className="mood-playlist-creator-title"
+  >
+    Create a Mood Playlist
+  </h2>
+  <form
+    className="mood-playlist-creator-form"
+    onSubmit={[Function]}
+  >
+    <div
+      className="mood-selection-container"
+    >
+      <label
+        className="mood-selection-label"
+      >
+        Select Mood:
+      </label>
+      <select
+        className="mood-selection-select"
+        onChange={[Function]}
+        value=""
+      >
+        <option
+          value=""
+        >
+          --Select Mood--
+        </option>
+        <option
+          value="Happy"
+        >
+          Happy
+        </option>
+        <option
+          value="Sad"
+        >
+          Sad
+        </option>
+        <option
+          value="Energetic"
+        >
+          Energetic
+        </option>
+        <option
+          value="Calm"
+        >
+          Calm
+        </option>
+        <option
+          value="Relaxed"
+        >
+          Relaxed
+        </option>
+        <option
+          value="Motivated"
+        >
+          Motivated
+        </option>
+        <option
+          value="Angry"
+        >
+          Angry
+        </option>
+        <option
+          value="Romantic"
+        >
+          Romantic
+        </option>
+        <option
+          value="Melancholic"
+        >
+          Melancholic
+        </option>
+        <option
+          value="Chill"
+        >
+          Chill
+        </option>
+        <option
+          value="Uplifting"
+        >
+          Uplifting
+        </option>
+        <option
+          value="Hopeful"
+        >
+          Hopeful
+        </option>
+        <option
+          value="Mellow"
+        >
+          Mellow
+        </option>
+        <option
+          value="Intense"
+        >
+          Intense
+        </option>
+        <option
+          value="Groovy"
+        >
+          Groovy
+        </option>
+        <option
+          value="Dreamy"
+        >
+          Dreamy
+        </option>
+        <option
+          value="Nostalgic"
+        >
+          Nostalgic
+        </option>
+        <option
+          value="Excited"
+        >
+          Excited
+        </option>
+        <option
+          value="Pensive"
+        >
+          Pensive
+        </option>
+        <option
+          value="Empowered"
+        >
+          Empowered
+        </option>
+      </select>
+    </div>
+    <button
+      className="fetch-tracks-button"
+      onClick={[Function]}
+      type="button"
+    >
+      Fetch Tracks
+    </button>
+    <div
+      className="track-list-container"
+    >
+      <ul
+        className="mood-playlist-creator-tracks-list"
+      />
+    </div>
+    <button
+      className="create-playlist-button"
+      type="submit"
+    >
+      Create Playlist
+    </button>
+  </form>
+</div>
+`;
+
+exports[`SpotifyPage Component matches snapshot 1`] = `
+<div
+  className="spotify-container"
+>
+  <h1
+    className="spotify-header"
+  >
+    Welcome, 
+    !
+  </h1>
+  <p>
+    Country: 
+  </p>
+  <p>
+    Followers: 
+    0
+  </p>
+  <button
+    className="spotify-button"
+    onClick={[Function]}
+  >
+    Login with Spotify
+  </button>
+</div>
+`;
+
+exports[`SuccessPage Component matches snapshot 1`] = `
+<div
+  className="success-page-container"
+>
+  <h2
+    className="success-page-header"
+  >
+    Playlist created successfully!
+  </h2>
+  <p>
+    You can view it here: 
+    <a
+      className="success-page-link"
+      href="https://open.spotify.com/playlist/12345"
+      rel="noopener noreferrer"
+      target="_blank"
+    >
+      Open Playlist
+    </a>
+  </p>
+  <p>
+    <a
+      className="back-to-dashboard-link"
+      href="/spotify"
+      onClick={[Function]}
+    >
+      Back to Dashboard
+    </a>
+  </p>
+  <button
+    className="success-page-button"
+    onClick={[Function]}
+  >
+    Logout from Spotify
+  </button>
+</div>
+`;

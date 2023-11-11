@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Navbar Component matches snapshot 1`] = `
+<nav
+  className="navbar"
+>
+  <div
+    className="navbar-container"
+  >
+    <a
+      className="navbar-logo"
+      href="/"
+      onClick={[Function]}
+    >
+      MoodMatcher
+    </a>
+    <div
+      className="navbar-links"
+    />
+  </div>
+</nav>
+`;

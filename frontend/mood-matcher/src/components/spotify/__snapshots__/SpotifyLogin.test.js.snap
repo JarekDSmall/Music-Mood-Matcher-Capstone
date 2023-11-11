@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SpotifyLogin Component matches snapshot 1`] = `
+<div
+  className="spotify-login-container"
+>
+  <h2>
+    Login with Spotify
+  </h2>
+  <button
+    className="spotify-login-button"
+    onClick={[Function]}
+  >
+    Login to Spotify
+  </button>
+</div>
+`;

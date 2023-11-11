@@ -19,8 +19,15 @@ export const AuthProvider = ({ children }) => {
     const logoutFromSpotify = useCallback(() => {
         localStorage.removeItem('spotifyAuthToken'); // Clearing the Spotify token from local storage
         setIsAuthenticated(false);
-        navigate('/spotify-login'); // Redirect to Spotify login page
-    }, [navigate]);    
+    
+        // Redirect to Spotify's logout page
+        window.location.href = 'https://accounts.spotify.com/en/logout';
+    
+        // After a short delay, redirect back to your app's login page
+        setTimeout(() => {
+            navigate('/spotify-login');
+        }, 2000); // Adjust the delay as needed
+    }, [navigate]);
 
     const contextValue = {
         isAuthenticated,

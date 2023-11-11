@@ -30,19 +30,25 @@ function MoodPlaylistCreator() {
     };
 
     const fetchTracks = async () => {
+        if (!mood) {
+            alert("Please select a mood"); // Display an alert if no mood is selected
+            return; // Exit the function to prevent further execution
+        }
+    
         try {
             // Search tracks based on mood to get seed tracks
             const seedTracks = await searchTracks(mood);
             const seedTrackIds = seedTracks.slice(0, 5).map(track => track.id); // Use the first 5 tracks as seeds
-
+    
             // Fetch recommendations based on seed tracks
             const recommendedTracks = await fetchRecommendations(seedTrackIds);
-
+    
             setTracks(recommendedTracks);
         } catch (error) {
             console.error("Error fetching tracks:", error);
         }
     };
+    
 
     const navigate = useNavigate();
 
