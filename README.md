@@ -2,6 +2,8 @@
 
 Music Mood Matcher is a full-stack application that matches users with playlists based on their mood. It integrates with the Spotify API to fetch user's top tracks and create mood-based playlists.
 
+**Live Demo:** [Music Mood Matcher Live Site](https://music-mood-matcher-a141b863e4d9.herokuapp.com/)
+
 ## Features
 
 - User authentication and registration.
@@ -9,38 +11,14 @@ Music Mood Matcher is a full-stack application that matches users with playlists
 - Fetch user's top tracks from Spotify.
 - Match songs with moods to create mood-based playlists.
 
-## API Endpoints
+## Technology Stack
+- Frontend: React, styled-components
+- Backend: Node.js, Express.js
+- APIs: Spotify API
+- Database: MongoDB (assumed based on the backend setup)
+- Testing: Jest for backend and frontend testing
 
-### User Routes:
-- POST `/users/register`: Register a new user.
-- POST `/users/login`: Authenticate and log in a user.
-- GET `/users/profile`: Fetch the authenticated user's profile.
-- PUT `/users/profile`: Update the authenticated user's profile.
-- DELETE `/users/delete`: Delete the authenticated user's account.
-
-### Song Routes:
-- POST `/add-to-playlist`: Add a song to the user's playlist.
-- DELETE `/remove-from-playlist`: Remove a song from the user's playlist.
-
-### Playlist Routes:
-- POST `/create`: Create a new playlist.
-- GET `/`: Fetch all playlists for a user.
-- PUT `/:playlistId`: Update a playlist's details.
-- DELETE `/:playlistId`: Delete a playlist.
-- POST `/:playlistId/add-songs`: Add songs to a playlist.
-- POST `/:playlistId/remove-songs`: Remove songs from a playlist.
-- GET `/:playlistId`: View a specific playlist.
-
-### Spotify Routes:
-- GET `/spotify/login`: Initiate OAuth2.0 flow with Spotify.
-- GET `/spotify/callback`: Callback route for Spotify authentication.
-- GET `/spotify/top-tracks`: Fetch user's top tracks from Spotify.
-- POST `/spotify/disconnect`: Disconnect from Spotify in your app.
-- POST `/spotify/refresh-token`: Refresh the Spotify access token using the refresh token.
-
-
-
-## Setup and Installation
+## Getting Started
 
 ### Prerequisites:
 - Node.js and npm installed on your machine.
@@ -70,10 +48,58 @@ SPOTIFY_CLIENT_SECRET=your_spotify_client_secret
 SESSION_SECRET=your_session_secret_key
 ```
 4. **Run the Backend Server**
-    ```npm start
+    ```npm start```
 5. **Run the Frontend Server**
-    ```cd frontend/moodmatcher
-        npm start
+    ```
+    cd frontend/mood-matcher
+    npm start
+    ```
         
 6. **Access the Application**
-    Open your browser and navigate to `http://localhost:3000` to access the frontend. The backend will be running on `http://localhost:5000`.   
+    Open your browser and navigate to `http://localhost:3000` to access the frontend. The backend will be running on `http://localhost:5000`.
+
+
+## Usage
+### How to use Music Mood Matcher:
+1. **Login: Start by logging in with your Spotify account.**
+2. **Select Your Mood: Choose your current mood from the provided options.**
+3. **Adjust Mood Intensity: Use the slider to adjust the intensity of your mood.**
+4. **Fetch Tracks: Click on "Fetch Tracks" to retrieve a list of songs that match your selected mood.**
+5. **Create Playlist: After fetching the tracks, click "Create Playlist" to curate them into a playlist.**
+6. **Enjoy Your Mood Playlist: The tracks will be compiled into a playlist named "Mood Playlist" based on your mood selection.**
+7. **Access Playlist on Spotify: Once the playlist is created, you can click the provided link to open and enjoy it directly on Spotify!**
+
+With these simple steps, Music Mood Matcher offers a seamless and personalized music experience, tailoring your playlist to perfectly match your mood at any moment.
+
+## Testing
+### Backend Testing
+The backend tests for the Music Mood Matcher application are designed to ensure the functionality of the server, including API endpoints and database interactions. The testing framework used is Jest.
+
+To run the backend tests, follow these steps:
+1. **Navigate to the backend directory**
+   ```
+   cd backend
+   ```
+2. **Run the tests using npm**
+   ```
+   npm test
+   ```
+
+## Frontend Testing
+Frontend tests focus on the React components and the overall user interface. The application uses React Testing Library for these tests.
+
+To execute the frontend tests, do the following:
+1. **Navigate to the frontend directory**
+    ```
+    cd frontend/mood-matcher
+   ```
+2. **Run the tests using npm**
+   ```
+   npm test
+   ```
+
+ ## Acknowledgments
+Special thanks to Jim Rudolf for his invaluable guidance and support throughout the development of this project.
+
+## Contact Information
+For any inquiries, support, or feedback regarding the Music Mood Matcher, feel free to reach out via email at [small.jarek@gmail.com](mailto:small.jarek@gmail.com)
