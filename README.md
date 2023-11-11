@@ -99,7 +99,7 @@ To execute the frontend tests, do the following:
    ```
 
  ## Acknowledgments
-Special thanks to Jim Rudolf for his invaluable guidance and support throughout the development of this project.
+Special thanks to my mentor, Jim Rudolf, for his invaluable guidance and support throughout the development of this project.
 
 ## Contact Information
 For any inquiries, support, or feedback regarding the Music Mood Matcher, feel free to reach out via email at [small.jarek@gmail.com](mailto:small.jarek@gmail.com)
