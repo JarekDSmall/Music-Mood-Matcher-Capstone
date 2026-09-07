@@ -27,7 +27,7 @@ export async function api(path,options={}){
  if(!connected()){disconnect();throw new Error('Your Spotify session has expired. Connect again.');}
  const session=read(TOKEN_KEY);const response=await fetch('https://api.spotify.com/v1/'+path,{...options,headers:{Authorization:`Bearer ${session.token}`,'Content-Type':'application/json'},signal:AbortSignal.timeout(20000)});
  if(response.status===401){disconnect();throw new Error('Spotify sign-in expired. Connect again.');}
- if(response.status===403)throw new Error('Spotify denied API access. This app only works with allowlisted Spotify test accounts, and some features may be restricted. The public playlist still works.');
+ if(response.status===403)throw new Error('Spotify denied API access. This app only works with allowlisted Spotify test accounts, and some features may be restricted. Connect with an approved account to search Spotify.');
  if(response.status===429)throw new Error('Spotify’s request limit was reached. Please try later.');
  if(!response.ok)throw new Error(`Spotify could not complete this request (${response.status}). Please try later.`);
  return response.status===204?null:response.json();
