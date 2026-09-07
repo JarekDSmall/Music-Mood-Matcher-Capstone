@@ -1,26 +1,21 @@
-# Music Mood Matcher - public portfolio edition
+# Music Mood Matcher — live Spotify discovery
 
 Live app: https://jareksmall.com/music-mood-matcher/
 
-The restored public app lives in `public-app/`. Choose an editorial mood, rank songs by energy, filter genres, remove and shuffle tracks, save playlists in your browser, and download/copy track lists. No account or backend is required for these features.
+The current app in `public-app/` uses the Spotify Web API search endpoint to discover up to 10 fresh tracks. Mood, energy and genre select search hints; random term/page selection adds variety. The last 200 track IDs shown in the tab are excluded. It does not silently substitute a fixed catalog when Spotify fails. Narrow results may return fewer than 10. Track IDs and title/artist duplicates are removed before display.
 
-Optional Spotify export uses Authorization Code with PKCE (no client secret), a short-lived session token, exact title/artist matching, and explicit review before creating a private playlist. Development mode requires allowlisted users and a Premium app owner. This is not unrestricted Spotify API access. Audio Features and Recommendations endpoints are not used.
+Spotify's original Recommendations and Audio Features endpoints are unavailable to this development app. This is mood-inspired catalog search, not audio-feature matching or personalized listening-history recommendations. Development mode requires an allowlisted Spotify account and a Premium app owner. Extended quota eligibility currently requires an established organization and at least 250,000 monthly active users; it is not a dashboard toggle available to this personal project.
+
+Save/load playlists locally, copy/download track lists, or review tracks and explicitly create a private Spotify playlist. Sign-in uses PKCE and the public client ID, with no client secret. Session tokens expire and are cleared on disconnect. New searches are bounded to eight API calls with a maximum of 10 results per page. API errors stop the search without automatic retries.
 
 ## Run and test
 
-From the repository root:
-
 ```sh
 python -m http.server 4173 --directory public-app
-node --test public-app/catalog.test.mjs
+node --test public-app/*.test.mjs
 ```
 
-Spotify login runs on the production origin with this registered callback:
-`https://jareksmall.com/music-mood-matcher/`
-
-Deploy `index.html`, `app.css`, `app.js`, `catalog.mjs`, and `spotify.mjs` together under `/music-mood-matcher/`. The portfolio build copies those files. The client ID is public by design; never add a client secret. Tokens stay in tab session storage and are cleared on disconnect or treated as invalid after expiry. Saved playlists stay in localStorage until deleted. No analytics or advertising scripts are used.
-
-Mood, genre, and energy tags are subjective editorial labels, not scientific measurements or Spotify-derived data. Open in Spotify uses search links. Exact catalog matching occurs only after an approved user connects; uncertain matches are skipped. Track availability varies by market.
+Use a server that serves `.mjs` as JavaScript. Spotify sign-in uses the registered production callback `https://jareksmall.com/music-mood-matcher/`. Deploy the HTML, CSS, JavaScript and `.mjs` modules together at that path, excluding test files. No client secret belongs in this app.
 
 ## Original capstone
 
