@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#111720"><meta name="referrer" content="no-referrer">
+<title>Music Mood Matcher — Jarek Small</title><meta name="description" content="Find a soundtrack for your mood. Explore curated music, build a playlist, and save your favorites. A project by Jarek Small."><link rel="canonical" href="https://jareksmall.com/music-mood-matcher/"><link rel="stylesheet" href="./app.css"><link rel="icon" href="/favicon.svg">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="shell header"><a class="brand" href="/">jarek small<span>.</span></a><a href="/">← Back to portfolio</a></header>
+<main class="shell" id="main">
+<div class="title-row"><div><p class="eyebrow">Music / Discovery / A project by Jarek Small</p><h1>Music Mood <em>Matcher.</em></h1><p class="intro">Find a little rhythm for right now.</p></div><span class="edition">THE PUBLIC EDITION <span aria-hidden="true">↗</span></span></div>
+<div class="workspace">
+<section class="controls panel" aria-labelledby="mood-heading"><p class="eyebrow">01 / Set the feeling</p><h2 id="mood-heading">Where’s your head at?</h2>
+<fieldset><legend class="sr-only">Choose a mood</legend><div class="moods">
+<label><input type="radio" name="mood" value="happy" checked><span><b aria-hidden="true">☀</b><strong>Happy</strong><small>A brighter outlook</small></span></label>
+<label><input type="radio" name="mood" value="calm"><span><b aria-hidden="true">≈</b><strong>Calm</strong><small>Room to breathe</small></span></label>
+<label><input type="radio" name="mood" value="reflective"><span><b aria-hidden="true">☾</b><strong>Reflective</strong><small>Sit with the feeling</small></span></label>
+<label><input type="radio" name="mood" value="energetic"><span><b aria-hidden="true">↗</b><strong>Energetic</strong><small>Find your momentum</small></span></label>
+</div></fieldset>
+<div class="energy-label"><label for="energy">Energy</label><output id="energy-value" for="energy">Balanced</output></div><input id="energy" type="range" min="1" max="5" value="3"><div class="range-labels"><span>Easygoing</span><span>Full volume</span></div>
+<label for="genre">Sound preference</label><select id="genre"><option value="all">A bit of everything</option value="pop">Pop</option><option value="indie">Indie & alternative</option><option value="soul">Soul & R&B</option><option value="electronic">Electronic & instrumental</option></select>
+<button class="primary" id="match">Find my soundtrack <span aria-hidden="true">↗</span></button><p class="caption">Mood labels are subjective editorial choices from a small curated collection—not Spotify audio analysis.</p>
+</section>
+<section class="results panel" aria-labelledby="playlist-heading"><div class="results-heading"><div><p class="eyebrow">02 / Make it yours</p><h2 id="playlist-heading">A brighter outlook</h2></div><span id="track-count" class="count"></span></div><p id="match-description" class="muted"></p>
+<div class="list-actions"><button id="shuffle" class="quiet">Shuffle order ↻</button><button id="reset" class="quiet">Reset picks</button></div>
+<ol id="tracks" class="tracks"></ol><p id="empty" hidden>No tracks left. Reset your picks or choose another mood.</p>
+<div class="save-bar"><label for="playlist-name">Playlist name</label><div class="save-row"><input id="playlist-name" maxlength="80" value="A brighter outlook"><button id="save" class="primary">Save on this device</button></div><div class="secondary-actions"><button id="download" class="quiet">Download track list ↓</button><button id="copy" class="quiet">Copy track list</button></div></div>
+</section></div>
+<p id="status" class="status" role="status" aria-live="polite"></p>
+<div class="lower-grid"><section class="panel" aria-labelledby="saved-heading"><p class="eyebrow">03 / Keep a little collection</p><h2 id="saved-heading">Your saved playlists</h2><p class="muted">Stored in this browser, on this device.</p><div id="saved"></div></section>
+<section class="panel spotify-panel" aria-labelledby="spotify-heading"><p class="eyebrow">Optional / Spotify</p><h2 id="spotify-heading">Take it with you.</h2><p class="muted">Open any track in Spotify without connecting here. Approved Spotify test users can also connect and export a private playlist.</p><p class="caption">This Spotify integration is in Development mode. Only accounts added to its allowlist can use the API; the app owner must maintain Spotify Premium.</p><div class="spotify-actions"><button id="connect" class="primary">Connect Spotify ↗</button><button id="disconnect" class="quiet" hidden>Disconnect</button><button id="prepare" class="quiet" hidden>Find these tracks on Spotify</button></div><p id="spotify-status" role="status" aria-live="polite"></p><div id="spotify-review" hidden><h3>Review Spotify matches</h3><p class="caption">Only matching track titles and artists are selected. Unmatched songs are omitted. Check the list before creating a private playlist.</p><div id="matched-tracks"></div><button class="primary" id="export">Create private playlist</button></div><a id="spotify-result" hidden target="_blank" rel="noopener noreferrer">Open your Spotify playlist ↗</a></section></div>
+<details class="about"><summary>How this version works</summary><p>The original Music Mood Matcher was a React, Express, and MongoDB capstone that used Spotify listening data. This public adaptation matches editorial mood tags and energy preferences from an included catalog. The public flow runs in your browser; no account or server is required.</p><p>Optional Spotify export uses authorization code with PKCE. Your Spotify password and client secret are never requested by this app. The access token stays in this tab’s session storage until it expires or you disconnect. Playlist data is saved locally only when you choose Save.</p><a href="https://github.com/JarekDSmall/Music-Mood-Matcher-Capstone" target="_blank" rel="noopener noreferrer">View source on GitHub ↗</a></details>
+</main><footer class="shell footer"><span>Made by Jarek Small</span><a href="/">Back to portfolio ↑</a></footer>
+<script type="module" src="./app.js"></script></body></html>
