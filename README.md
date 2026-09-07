@@ -1,3 +1,33 @@
+# Music Mood Matcher - public portfolio edition
+
+Live app: https://jareksmall.com/music-mood-matcher/
+
+The restored public app lives in `public-app/`. Choose an editorial mood, rank songs by energy, filter genres, remove and shuffle tracks, save playlists in your browser, and download/copy track lists. No account or backend is required for these features.
+
+Optional Spotify export uses Authorization Code with PKCE (no client secret), a short-lived session token, exact title/artist matching, and explicit review before creating a private playlist. Development mode requires allowlisted users and a Premium app owner. This is not unrestricted Spotify API access. Audio Features and Recommendations endpoints are not used.
+
+## Run and test
+
+From the repository root:
+
+```sh
+python -m http.server 4173 --directory public-app
+node --test public-app/catalog.test.mjs
+```
+
+Spotify login runs on the production origin with this registered callback:
+`https://jareksmall.com/music-mood-matcher/`
+
+Deploy `index.html`, `app.css`, `app.js`, `catalog.mjs`, and `spotify.mjs` together under `/music-mood-matcher/`. The portfolio build copies those files. The client ID is public by design; never add a client secret. Tokens stay in tab session storage and are cleared on disconnect or treated as invalid after expiry. Saved playlists stay in localStorage until deleted. No analytics or advertising scripts are used.
+
+Mood, genre, and energy tags are subjective editorial labels, not scientific measurements or Spotify-derived data. Open in Spotify uses search links. Exact catalog matching occurs only after an approved user connects; uncertain matches are skipped. Track availability varies by market.
+
+## Original capstone
+
+The existing `frontend/` and `backend/` directories are preserved as the original React/Express/MongoDB implementation. Their retired hosting URLs and dependencies are not the current public app. Original documentation follows for historical reference.
+
+---
+
 # Music Mood Matcher
 
 Music Mood Matcher is a full-stack application that matches users with playlists based on their mood. It integrates with the Spotify API to fetch user's top tracks and create mood-based playlists.
